@@ -8,6 +8,7 @@ import jade.lang.acl.ACLMessage;
 public class AgenteInteligente extends Agent {
 
     // Prueba commit
+    //Segunda prueba
     @Override
     protected void setup() {
 
@@ -26,7 +27,6 @@ public class AgenteInteligente extends Agent {
                             "Mensaje recibido: "
                                     + mensaje.getContent()
                     );
-
                     ACLMessage respuesta =
                             new ACLMessage(ACLMessage.INFORM);
 
