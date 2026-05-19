@@ -14,6 +14,26 @@ public class AgenteInteligente extends Agent {
 
     private AID agenteVisualizacion;
 
+    /**
+     * Límetes máximos de gasto mensual por categoría en euros. Si el total de una categoría supera dicho límite se genera una alerta.
+     */
+    private static final double LIMITE_NECESIDADES = 1000.0;
+    private static final double LIMITE_OCIO = 1000.0;
+    private static final double LIMITE_AHORRO = 1000.0;
+
+    /**
+     * Acumuladores del mes actual según categoría
+     */
+    private double totalNecesidades = 0.0;
+    private double totalOcio = 0.0;
+    private double totalAhorro = 0.0;
+
+
+    /**
+     * Contador de gastos del mes
+     */
+    private int numGastos= 0;
+
     @Override
     protected void setup() {
 
@@ -83,4 +103,26 @@ public class AgenteInteligente extends Agent {
         }
         System.out.println(getLocalName() + " finalizando");
     }
+
+    /**
+     * Añade el importe del gasto en la categoría correspondiente
+     *
+     * @param categoria
+     * @param importe
+     */
+    private void añadirGasto(String categoria, double importe){
+        switch (categoria){
+            case "Necesidad": totalNecesidades += importe;
+            case "Ocio": totalOcio += importe;
+            case "Ahorro": totalAhorro += importe;
+
+        }
+    }
+
+    private boolean detectarAlerta(){
+        return totalNecesidades > LIMITE_NECESIDADES ||
+                totalOcio > LIMITE_OCIO ||
+                totalAhorro > LIMITE_AHORRO;
+    }
 }
+
