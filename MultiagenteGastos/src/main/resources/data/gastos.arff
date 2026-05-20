@@ -1,0 +1,16 @@
+@relation gastos_personales
+
+@attribute descripcion string
+@attribute importe numeric
+@attribute categoria {Necesidad,Ocio,Ahorro}
+
+@data
+'Compra Mercadona supermercado', 65.42, Necesidad
+'Factura de la luz Iberdrola Iberenergia', 85.20, Necesidad
+'Alquiler del piso mensual de Madrid', 750.00, Necesidad
+'Cena restaurante italiano Ginos con amigos', 42.50, Ocio
+'Entradas de cine y palomitas Yelmo', 18.00, Ocio
+'Copas discoteca fin de semana fiesta', 25.00, Ocio
+'Traspaso a cuenta ahorro futuro retencion', 200.00, Ahorro
+'Compra de acciones bolsa inversion BBVA', 150.00, Ahorro
+'Fondo de pensiones aportacion mensual', 100.00, Ahorro

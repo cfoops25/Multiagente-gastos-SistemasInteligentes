@@ -9,17 +9,44 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.*;
 import jade.domain.FIPAException;
 
+import weka.classifiers.Classifier;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.meta.FilteredClassifier;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+import weka.filters.unsupervised.attribute.StringToWordVector;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.util.FileManager;
+
+import java.io.InputStream;
+
 
 public class AgenteInteligente extends Agent {
 
     private AID agenteVisualizacion;
 
+    // VARIABLES DE JENA -- LIMITES ONTOLÓGICOS
+    private double limiteNecesidades;
+    private double limiteOcio;
+    private double limiteAhorro;
+
+    // VARIABLES DE WEKA
     /**
-     * Límetes máximos de gasto mensual por categoría en euros. Si el total de una categoría supera dicho límite se genera una alerta.
+     * Contenedor en memoria del dataset de entrenamiento (.arff).
+     * Define el espacio de atributos (texto e importe) y actúa como molde estructural para las predicciones.
      */
-    private static final double LIMITE_NECESIDADES = 1000.0;
-    private static final double LIMITE_OCIO = 1000.0;
-    private static final double LIMITE_AHORRO = 1000.0;
+    private Instances datasetEntrenamiento;
+    /**
+     * Clasificador híbrido de Weka.
+     * Encapsula el filtro StringToWordVector para vectorizar el lenguaje natural y el algoritmo Naive Bayes para la predicción.
+     */
+    private FilteredClassifier clasificadorWeka;
 
     /**
      * Acumuladores del mes actual según categoría
@@ -39,6 +66,27 @@ public class AgenteInteligente extends Agent {
 
         System.out.println(getLocalName() + " iniciado.");
         registrarEnDF();
+
+        try {
+            String rutaOntologia = "src/main/resources/data/finanzas.ttl";
+            Model modeloOntologia =  ModelFactory.createDefaultModel(); // Cramos un RDF vacío
+            InputStream in = FileManager.get().open(rutaOntologia);
+
+            if(in == null){
+                throw new IllegalArgumentException("Archivo de ontología no encontrado");
+            }
+            modeloOntologia.read(in, null, "TURTLE"); // Usamos TURTLE para indicar a JENA que usamos el el formato abreviado de web semántica
+
+            String ns = "http://www.fi.upm.es/sistemas-inteligentes/finanzas#";
+            Property propLimite = modeloOntologia.getProperty(ns + "limiteMensual"); // Apuntamos a la URI
+
+            limiteNecesidades = modeloOntologia.getResource(ns + "Necesidad").getProperty(propLimite).getLiteral().getDouble();
+            limiteOcio = modeloOntologia.getResource(ns + "Ocio").getProperty(propLimite).getLiteral().getDouble();
+            limiteAhorro = modeloOntologia.getResource(ns + "Ahorro").getProperty(propLimite).getLiteral().getDouble();
+        }catch (Exception e) {
+            System.err.println("Error al cargar la ontología con Jena: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         addBehaviour(new OneShotBehaviour() {
             @Override
@@ -110,19 +158,28 @@ public class AgenteInteligente extends Agent {
      * @param categoria
      * @param importe
      */
-    private void añadirGasto(String categoria, double importe){
+    private void anadirGasto(String categoria, double importe){
         switch (categoria){
-            case "Necesidad": totalNecesidades += importe;
-            case "Ocio": totalOcio += importe;
-            case "Ahorro": totalAhorro += importe;
+            case "Necesidad":
+                totalNecesidades += importe;
+                break;
+            case "Ocio":
+                totalOcio += importe;
+                break;
+            case "Ahorro":
+                totalAhorro += importe;
+                break;
+            default:
+                System.out.println("Categoría '" + categoria + "' no mapeable en los acumuladores internos.");
+                break;
 
         }
     }
 
     private boolean detectarAlerta(){
-        return totalNecesidades > LIMITE_NECESIDADES ||
-                totalOcio > LIMITE_OCIO ||
-                totalAhorro > LIMITE_AHORRO;
+        return totalNecesidades > limiteNecesidades ||
+                totalOcio > limiteOcio ||
+                totalAhorro > limiteAhorro;
     }
 }
 
