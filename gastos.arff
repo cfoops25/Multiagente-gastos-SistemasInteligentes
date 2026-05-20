@@ -1,0 +1,55 @@
+@relation gastos_e_ingresos
+
+@attribute concepto string
+@attribute categoria {Necesidad,Ocio,Ahorro,Ingreso}
+
+@data
+% --- CATEGORÍA: NECESIDAD ---
+'Mercadona',Necesidad
+'mercadona',Necesidad
+'Carrefour',Necesidad
+'Lidl',Necesidad
+'lidl',Necesidad
+'compra supermercado',Necesidad
+'Farmacia',Necesidad
+'farmacia',Necesidad
+'Medico',Necesidad
+'Alquiler',Necesidad
+'alquiler',Necesidad
+'pago del alquiler',Necesidad
+'Luz',Necesidad
+'factura luz',Necesidad
+'Gas',Necesidad
+
+% --- CATEGORÍA: OCIO ---
+'Cine',Ocio
+'cine',Ocio
+'cine con amigos',Ocio
+'Bar',Ocio
+'bar',Ocio
+'cervezas',Ocio
+'copas',Ocio
+'Netflix',Ocio
+'netflix',Ocio
+'Spotify',Ocio
+'Restaurante',Ocio
+'restaurante',Ocio
+'cena',Ocio
+'concierto',Ocio
+
+% --- CATEGORÍA: AHORRO ---
+'Traspaso a cuenta ahorro',Ahorro
+'ahorro',Ahorro
+'ahorros',Ahorro
+'Compra acciones',Ahorro
+'inversion',Ahorro
+'hucha',Ahorro
+'ahorro viaje',Ahorro
+'guardar dinero',Ahorro
+
+% --- CATEGORÍA: INGRESO ---
+'Nómina',Ingreso
+'nomina',Ingreso
+'Bizum de mi madre',Ingreso
+'Bizum',Ingreso
+'bizum',Ingreso

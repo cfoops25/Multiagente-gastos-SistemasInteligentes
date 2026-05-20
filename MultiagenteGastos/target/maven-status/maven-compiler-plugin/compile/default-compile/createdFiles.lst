@@ -1,7 +1,9 @@
-agentes/AgenteVisualizacion$1.class
+Comportamientos/VisualizadorBehaviour$1.class
+agentes/AgenteInteligente$ProcesarYReenviar.class
 agentes/AgenteInteligente.class
+agentes/AgentePercepcion$EnviarDatosSimulados.class
 agentes/AgentePercepcion.class
-agentes/AgenteInteligente$1.class
-agentes/AgentePercepcion$1.class
+Comportamientos/VisualizadorBehaviour.class
+Comportamientos/VisualizadorBehaviour$2.class
 agentes/AgenteVisualizacion.class
 agentes/Main.class
