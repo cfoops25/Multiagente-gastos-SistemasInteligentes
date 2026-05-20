@@ -1,0 +1,16 @@
+@prefix : <http://www.fi.upm.es/sistemas-inteligentes/finanzas#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Definición de los límites de presupuesto mensuales para el AgenteInteligente
+
+:Necesidad
+    :limiteMensual "1000.0"^^xsd:double ;
+    :descripcion "Gastos basicos obligatorios e indispensables" .
+
+:Ocio
+    :limiteMensual "150.0"^^xsd:double ;         # Lo he puesto bajo para que te salte la ALERTA rápido en la demo y se vea el Swing en rojo
+    :descripcion "Gastos de entretenimiento, restaurantes y tiempo libre" .
+
+:Ahorro
+    :limiteMensual "500.0"^^xsd:double ;
+    :descripcion "Dinero destinado a fondos, inversion o colchon financiero" .
