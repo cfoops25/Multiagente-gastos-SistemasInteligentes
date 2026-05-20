@@ -7,7 +7,7 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 
 public class Main {
-
+//comentario
     public static void main(String[] args) {
 
         Runtime runtime = Runtime.instance();
