@@ -49,7 +49,7 @@
 'billete tren',Necesidad
 'reparacion caldera',Necesidad
 'reparación caldera',Necesidad
-'revision gas',
+'revision gas',Necesidad
 'revisión gas',Necesidad
 'butano',Necesidad
 'colegio',Necesidad
@@ -78,7 +78,11 @@
 'optica',Necesidad
 'gafas',Necesidad
 'revision medica',Necesidad
-
+'taller mecanico',Necesidad
+'taller mecánico',Necesidad
+'factura taller',Necesidad
+'reparacion coche taller',Necesidad
+'taller coche',Necesidad
 % --- CATEGORÍA: OCIO ---
 'cine',Ocio
 'cine con amigos',Ocio
@@ -136,11 +140,11 @@
 'ticketmaster',Ocio
 'entradas concierto',Ocio
 'gastrobar',Ocio
-'taperia',
+'taperia',Ocio
 'tapería',Ocio
-'pizzeria',
+'pizzeria',Ocio
 'pizzería',Ocio
-'hamburgueseria',
+'hamburgueseria',Ocio
 'hamburguesería',Ocio
 'starbucks',Ocio
 'copas amigos',Ocio
@@ -155,9 +159,9 @@
 'free tour',Ocio
 'masaje',Ocio
 'spa',Ocio
-'peluqueria',
+'peluqueria',Ocio
 'peluquería',Ocio
-'estetica',
+'estetica',Ocio
 'estética',Ocio
 'tatuaje',Ocio
 'fnac',Ocio
@@ -203,7 +207,7 @@
 'comprar etf',Ahorro
 'etf',Ahorro
 'broker',Ahorro
-'degiro',Ocio
+'degiro',Ahorro
 'trade republic',Ahorro
 'binance',Ahorro
 'coinbase',Ahorro
@@ -260,7 +264,7 @@
 'gratificacion',Ingreso
 'gratificación',Ingreso
 
-% --- CATEGORÍA: OTROS 
+% --- CATEGORÍA: OTROS ---
 'prueba',Otros
 'test',Otros
 'cosa',Otros

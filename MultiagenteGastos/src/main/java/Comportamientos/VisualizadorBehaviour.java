@@ -37,8 +37,11 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.MessageTemplate; 
 
 public class VisualizadorBehaviour extends CyclicBehaviour {
 
@@ -69,18 +72,14 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
     private JProgressBar barraHealth;
 
     private java.util.Map<String, Color> mapaColores = new java.util.HashMap<>();
-    private int colorIndex = 0;
+
+
     public VisualizadorBehaviour(Agent agente) {
         super(agente);
         SwingUtilities.invokeLater(this::crearVentana);
     }
 
-    // ── CAMBIOS ────────────────────────────────────────────────
-
-    private StringBuilder historialMovimientos = new StringBuilder();
-    private boolean esCritico = false;
-
-    // ── JADE ─────────────────────────────────────────────────────────────────
+    // JADE
     @Override
     public void action() {
         MessageTemplate mt = MessageTemplate.and(
@@ -122,7 +121,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         SwingUtilities.invokeLater(() -> actualizar(fI, fG, fB, fC, fM, fR, fP));
     }
 
-    // ── VENTANA ───────────────────────────────────────────────────────────────
+    // MÓDULOS GUI
     private void crearVentana() {
         ventana = new JFrame("Personal Finance Dashboard");
         ventana.setSize(1280, 760);
@@ -141,7 +140,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         ventana.setVisible(true);
     }
 
-    // ── HEADER ────────────────────────────────────────────────────────────────
+  
     private JPanel crearHeader() {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(BG_DARK);
@@ -160,7 +159,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         izq.add(titulo);
         izq.add(sub);
 
-        // Botón para añadir movimiento
+
         JButton btnPeriod = new JButton("  Añadir Movimiento");
         btnPeriod.setBackground(new Color(60, 100, 220));
         btnPeriod.setForeground(Color.WHITE);
@@ -180,18 +179,16 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
             try {
                 ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
                 msg.setContent("ABRIR_VENTANA");
-
-                // Creamos la plantilla con el tipo que registramos en AgentePercepcion
-                jade.domain.FIPAAgentManagement.DFAgentDescription template = new jade.domain.FIPAAgentManagement.DFAgentDescription();
-                jade.domain.FIPAAgentManagement.ServiceDescription sd = new jade.domain.FIPAAgentManagement.ServiceDescription();
+            
+                DFAgentDescription template = new DFAgentDescription();
+                ServiceDescription sd = new ServiceDescription();
                 sd.setType("percepcion-gastos"); 
                 template.addServices(sd);
 
-                // Buscamos en las páginas amarillas utilizando el objeto 'myAgent' de este Behaviour
-                jade.domain.FIPAAgentManagement.DFAgentDescription[] result = jade.domain.DFService.search(myAgent, template);
+          
+                DFAgentDescription[] result = DFService.search(myAgent, template);
 
                 if (result.length > 0) {
-                    // Añadimos como receptor al AID encontrado de forma dinámica
                     msg.addReceiver(result[0].getName());
                     msg.setConversationId("abrir-interfaz");
                     myAgent.send(msg);
@@ -218,43 +215,39 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         return p;
     }
 
+    private JPanel crearCuerpo() {
+        JPanel cuerpo = new JPanel();
+        cuerpo.setBackground(BG_DARK);
+        cuerpo.setLayout(new BorderLayout(0, 16));
 
-    // ── CUERPO ────────────────────────────────────────────────────────────────
-   private JPanel crearCuerpo() {
+        cuerpo.add(crearFilaKPI(), BorderLayout.NORTH);
+        cuerpo.add(crearZonaCentral(), BorderLayout.CENTER);
 
-    JPanel cuerpo = new JPanel();
-    cuerpo.setBackground(BG_DARK);
-    cuerpo.setLayout(new BorderLayout(0, 16));
+        return cuerpo;
+    }
 
-    cuerpo.add(crearFilaKPI(), BorderLayout.NORTH);
-    cuerpo.add(crearZonaCentral(), BorderLayout.CENTER);
+    private JPanel crearZonaCentral() {
+        JPanel panel = new JPanel(new BorderLayout(16, 0));
+        panel.setBackground(BG_DARK);
 
-    return cuerpo;
-}
-private JPanel crearZonaCentral() {
+        JPanel izquierda = new JPanel(new BorderLayout(0,16));
+        izquierda.setBackground(BG_DARK);
 
-    JPanel panel = new JPanel(new BorderLayout(16, 0));
-    panel.setBackground(BG_DARK);
+        JPanel budget = crearPanelBudget();
+        budget.setPreferredSize(new Dimension(320, 420));
 
-    JPanel izquierda = new JPanel(new BorderLayout(0,16));
-izquierda.setBackground(BG_DARK);
+        JPanel health = crearPanelHealth();
+        health.setPreferredSize(new Dimension(320, 180));
 
-JPanel budget = crearPanelBudget();
-budget.setPreferredSize(new Dimension(320, 420));
+        izquierda.add(budget, BorderLayout.CENTER);
+        izquierda.add(health, BorderLayout.SOUTH);
 
-JPanel health = crearPanelHealth();
-health.setPreferredSize(new Dimension(320, 180));
+        panel.add(izquierda, BorderLayout.WEST);
+        panel.add(crearPanelDerecho(), BorderLayout.CENTER);
 
-izquierda.add(budget, BorderLayout.CENTER);
-izquierda.add(health, BorderLayout.SOUTH);
+        return panel;
+    }
 
-    panel.add(izquierda, BorderLayout.WEST);
-    panel.add(crearPanelDerecho(), BorderLayout.CENTER);
-
-    return panel;
-}
-
-    // ── FILA KPI ──────────────────────────────────────────────────────────────
     private JPanel crearFilaKPI() {
         JPanel fila = new JPanel(new GridLayout(1, 3, 16, 0));
         fila.setBackground(BG_DARK);
@@ -274,7 +267,6 @@ izquierda.add(health, BorderLayout.SOUTH);
         card.setBackground(BG_CARD);
         card.setBorder(new EmptyBorder(18, 18, 18, 18));
 
-        // Círculo con icono
         JPanel circulo = new JPanel() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -310,61 +302,52 @@ izquierda.add(health, BorderLayout.SOUTH);
         return card;
     }
 
-    // ── FILA INFERIOR ─────────────────────────────────────────────────────────
-    private JPanel crearFilaInferior() {
-        JPanel fila = new JPanel(new GridLayout(1, 2, 16, 0));
-        fila.setBackground(BG_DARK);
-        fila.add(crearPanelBudget());
-        fila.add(crearPanelDerecho());
-        return fila;
-    }
     private JPanel crearPanelHealth() {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBackground(BG_CARD);
+        card.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-    JPanel card = new JPanel();
-    card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-    card.setBackground(BG_CARD);
-    card.setBorder(new EmptyBorder(20, 20, 20, 20));
+        JLabel titulo = bold("Financial Health", 15, Color.WHITE);
+        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel sub = plain("Based on income vs expenses", 11, SUBTEXT);
+        sub.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    JLabel titulo = bold("Financial Health", 15, Color.WHITE);
-    titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-    JLabel sub = plain("Based on income vs expenses", 11, SUBTEXT);
-    sub.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblHealthScore = new JLabel("0/100");
+        lblHealthScore.setFont(new Font("Segoe UI", Font.BOLD, 38));
+        lblHealthScore.setForeground(GREEN);
+        lblHealthScore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    lblHealthScore = new JLabel("0/100");
-    lblHealthScore.setFont(new Font("Segoe UI", Font.BOLD, 38));
-    lblHealthScore.setForeground(GREEN);
-    lblHealthScore.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblHealthEstado = new JLabel("Unknown");
+        lblHealthEstado.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblHealthEstado.setForeground(SUBTEXT);
+        lblHealthEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-    lblHealthEstado = new JLabel("Unknown");
-    lblHealthEstado.setFont(new Font("Segoe UI", Font.BOLD, 14));
-    lblHealthEstado.setForeground(SUBTEXT);
-    lblHealthEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
+        barraHealth = new JProgressBar(0, 100);
+        barraHealth.setValue(0);
+        barraHealth.setBorderPainted(false);
+        barraHealth.setBackground(new Color(55,55,70));
+        barraHealth.setForeground(GREEN);
+        barraHealth.setAlignmentX(Component.CENTER_ALIGNMENT);
+        barraHealth.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
 
-    barraHealth = new JProgressBar(0, 100);
-    barraHealth.setValue(0);
-    barraHealth.setBorderPainted(false);
-    barraHealth.setBackground(new Color(55,55,70));
-    barraHealth.setForeground(GREEN);
-    barraHealth.setAlignmentX(Component.CENTER_ALIGNMENT);
-    barraHealth.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
+        card.add(titulo);
+        card.add(Box.createVerticalStrut(4));
+        card.add(sub);
 
-    card.add(titulo);
-    card.add(Box.createVerticalStrut(4));
-    card.add(sub);
+        card.add(Box.createVerticalGlue());
 
-    card.add(Box.createVerticalGlue());
+        card.add(lblHealthScore);
+        card.add(Box.createVerticalStrut(8));
+        card.add(lblHealthEstado);
+        card.add(Box.createVerticalStrut(20));
+        card.add(barraHealth);
 
-    card.add(lblHealthScore);
-    card.add(Box.createVerticalStrut(8));
-    card.add(lblHealthEstado);
-    card.add(Box.createVerticalStrut(20));
-    card.add(barraHealth);
+        card.add(Box.createVerticalGlue());
 
-    card.add(Box.createVerticalGlue());
+        return card;
+    }
 
-    return card;
-}
-    // Budget Status
     private JPanel crearPanelBudget() {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -390,7 +373,6 @@ izquierda.add(health, BorderLayout.SOUTH);
         sep.setForeground(new Color(55, 55, 70));
         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
 
-        // Income vs Expenses
         JLabel titIE = bold("Income vs Expenses", 13, Color.WHITE);
         titIE.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -426,172 +408,174 @@ izquierda.add(health, BorderLayout.SOUTH);
         return card;
     }
 
-  private JPanel crearFilaBarra(JLabel lblNombre, JLabel lblValor, JPanel barra) {
+    private JPanel crearFilaBarra(JLabel lblNombre, JLabel lblValor, JPanel barra) {
 
-    JPanel contenedor = new JPanel();
-    contenedor.setLayout(new BoxLayout(contenedor, BoxLayout.Y_AXIS));
-    contenedor.setBackground(BG_CARD);
-    contenedor.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JPanel contenedor = new JPanel();
+        contenedor.setLayout(new BoxLayout(contenedor, BoxLayout.Y_AXIS));
+        contenedor.setBackground(BG_CARD);
+        contenedor.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    JPanel fila = new JPanel(new BorderLayout());
-    fila.setBackground(BG_CARD);
-    fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
+        JPanel fila = new JPanel(new BorderLayout());
+        fila.setBackground(BG_CARD);
+        fila.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 
-    fila.add(lblNombre, BorderLayout.WEST);
-    fila.add(lblValor, BorderLayout.EAST);
+        fila.add(lblNombre, BorderLayout.WEST);
+        fila.add(lblValor, BorderLayout.EAST);
 
-    // contenedor de la barra alineado a la derecha
-    JPanel barraWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    barraWrapper.setBackground(BG_CARD);
-    barraWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
+        JPanel barraWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        barraWrapper.setBackground(BG_CARD);
+        barraWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
 
-    barra.setPreferredSize(new Dimension(200, 10));
-    barra.setMinimumSize(new Dimension(0, 10));
+        barra.setPreferredSize(new Dimension(200, 10));
+        barra.setMinimumSize(new Dimension(0, 10));
 
-    barraWrapper.add(barra);
+        barraWrapper.add(barra);
 
-    contenedor.add(fila);
-    contenedor.add(Box.createVerticalStrut(4));
-    contenedor.add(barraWrapper);
+        contenedor.add(fila);
+        contenedor.add(Box.createVerticalStrut(4));
+        contenedor.add(barraWrapper);
 
-    return contenedor;
-}
-private final Color[] coloresCategorias = {
-    new Color(80,190,130),
-    new Color(230,130,60),
-    new Color(90,150,240),
-    new Color(180,120,255),
-    new Color(255,90,140),
-    new Color(70,200,200),
-    new Color(255,200,80),
-    new Color(120,220,120)
-};
+        return contenedor;
+    }
+    private final Color[] coloresCategorias = {
+        new Color(80, 190, 130),
+        new Color(230, 130, 60),
+        new Color(90, 150, 240),
+        new Color(180, 120, 255),
+        new Color(255, 90, 140),
+        new Color(70, 200, 200),
+        new Color(255, 200, 80),
+        new Color(120, 220, 120)
+    };
     // Panel derecho: dona + tabla
-   private JPanel crearPanelDerecho() {
+    private JPanel crearPanelDerecho() {
 
-    JPanel p = new JPanel(new BorderLayout(16, 0));
-    p.setBackground(BG_DARK);
+        JPanel p = new JPanel(new BorderLayout(16, 0));
+        p.setBackground(BG_DARK);
 
-    JPanel izquierda = crearPanelDona();
-    izquierda.setPreferredSize(new Dimension(320, 400));
+        JPanel izquierda = crearPanelDona();
+        izquierda.setPreferredSize(new Dimension(320, 400));
 
-    p.add(izquierda, BorderLayout.WEST);
-    p.add(crearPanelTabla(), BorderLayout.CENTER);
+        p.add(izquierda, BorderLayout.WEST);
+        p.add(crearPanelTabla(), BorderLayout.CENTER);
 
-    return p;
-}
+        return p;
+    }
     // Dona
     private JPanel crearPanelDona() {
 
-    JPanel card = new JPanel(new BorderLayout(0, 12));
-    card.setBackground(BG_CARD);
-    card.setBorder(new EmptyBorder(16, 16, 16, 16));
+        JPanel card = new JPanel(new BorderLayout(0, 12));
+        card.setBackground(BG_CARD);
+        card.setBorder(new EmptyBorder(16, 16, 16, 16));
 
-    JLabel tit = bold("Category Spending", 14, Color.WHITE);
-    JLabel sub = plain("Top Categories", 11, SUBTEXT);
+        JLabel tit = bold("Category Spending", 14, Color.WHITE);
+        JLabel sub = plain("Top Categories", 11, SUBTEXT);
 
-    JPanel header = new JPanel(new GridLayout(2,1));
-    header.setBackground(BG_CARD);
-    header.add(tit);
-    header.add(sub);
+        JPanel header = new JPanel(new GridLayout(2, 1));
+        header.setBackground(BG_CARD);
+        header.add(tit);
+        header.add(sub);
 
-    datasetDona = new DefaultPieDataset();
-    datasetDona.setValue("Sin datos", 1);
+        datasetDona = new DefaultPieDataset();
+        datasetDona.setValue("Sin datos", 1);
 
-    JFreeChart chart = ChartFactory.createRingChart(
-        "",
-        datasetDona,
-        false,
-        true,
-        true
-    );
-    chart.setBackgroundPaint(BG_CARD);
+        JFreeChart chart = ChartFactory.createRingChart(
+                "",
+                datasetDona,
+                false,
+                true,
+                true
+        );
+        chart.setBackgroundPaint(BG_CARD);
 
-    piePlot = (PiePlot) chart.getPlot();
+        piePlot = (PiePlot) chart.getPlot();
 
-    piePlot.setBackgroundPaint(BG_CARD);
-    piePlot.setOutlineVisible(false);
-    piePlot.setShadowPaint(null);
-    piePlot.setLabelGenerator(null);
-    piePlot.setSectionPaint("Sin datos", new Color(70,70,85));
+        piePlot.setBackgroundPaint(BG_CARD);
+        piePlot.setOutlineVisible(false);
+        piePlot.setShadowPaint(null);
+        piePlot.setLabelGenerator(null);
+        piePlot.setSectionPaint("Sin datos", new Color(70, 70, 85));
 
-    ChartPanel cp = new ChartPanel(chart);
-    cp.setBackground(BG_CARD);
-    cp.setPreferredSize(new Dimension(280,280)); 
+        ChartPanel cp = new ChartPanel(chart);
+        cp.setBackground(BG_CARD);
+        cp.setPreferredSize(new Dimension(280, 280));
 
-    panelLeyenda = new JPanel();
-    panelLeyenda.setLayout(new BoxLayout(panelLeyenda, BoxLayout.Y_AXIS));
-    panelLeyenda.setBackground(BG_CARD);
+        panelLeyenda = new JPanel();
+        panelLeyenda.setLayout(new BoxLayout(panelLeyenda, BoxLayout.Y_AXIS));
+        panelLeyenda.setBackground(BG_CARD);
 
-    card.add(header, BorderLayout.NORTH);
-    card.add(cp, BorderLayout.CENTER);
-    card.add(panelLeyenda, BorderLayout.SOUTH);
+        card.add(header, BorderLayout.NORTH);
+        card.add(cp, BorderLayout.CENTER);
+        card.add(panelLeyenda, BorderLayout.SOUTH);
 
-    return card;
-}
+        return card;
+    }
     // Tabla
     private JPanel crearPanelTabla() {
-    JPanel card = new JPanel(new BorderLayout(0, 8));
-    card.setBackground(BG_CARD);
-    card.setBorder(new EmptyBorder(16, 16, 16, 16));
+        JPanel card = new JPanel(new BorderLayout(0, 8));
+        card.setBackground(BG_CARD);
+        card.setBorder(new EmptyBorder(16, 16, 16, 16));
 
-    JLabel tit = bold("Transactions", 14, Color.WHITE);
+        JLabel tit = bold("Transactions", 14, Color.WHITE);
 
-    // === NUEVO ORDEN DE COLUMNAS ===
-    String[] cols = {"Day", "Type", "Category", "Amount", "Concept"};
-    modeloTabla = new DefaultTableModel(cols, 0) {
-        @Override public boolean isCellEditable(int r, int c) { return false; }
-    };
+     //Orden columnas
+        String[] cols = {"Day", "Type", "Category", "Amount", "Concept"};
+        modeloTabla = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
 
-    JTable tabla = new JTable(modeloTabla);
-    tabla.setBackground(BG_CARD2);
-    tabla.setForeground(TEXT);
-    tabla.setGridColor(new Color(50, 50, 65));
-    tabla.getTableHeader().setBackground(new Color(44, 44, 58));
-    tabla.getTableHeader().setForeground(SUBTEXT);
-    tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-    tabla.setRowHeight(34);
-    tabla.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-    tabla.setIntercellSpacing(new Dimension(0, 1));
-    tabla.setShowGrid(false);
+        JTable tabla = new JTable(modeloTabla);
+        tabla.setBackground(BG_CARD2);
+        tabla.setForeground(TEXT);
+        tabla.setGridColor(new Color(50, 50, 65));
+        tabla.getTableHeader().setBackground(new Color(44, 44, 58));
+        tabla.getTableHeader().setForeground(SUBTEXT);
+        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        tabla.setRowHeight(34);
+        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tabla.setIntercellSpacing(new Dimension(0, 1));
+        tabla.setShowGrid(false);
 
-    tabla.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    tabla.getColumnModel().getColumn(0).setPreferredWidth(50);  
-    tabla.getColumnModel().getColumn(1).setPreferredWidth(100);  
-    tabla.getColumnModel().getColumn(2).setPreferredWidth(100);  
-    tabla.getColumnModel().getColumn(3).setPreferredWidth(100);   
-    tabla.getColumnModel().getColumn(4).setPreferredWidth(270); 
+        tabla.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        tabla.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tabla.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tabla.getColumnModel().getColumn(2).setPreferredWidth(100);
+        tabla.getColumnModel().getColumn(3).setPreferredWidth(100);
+        tabla.getColumnModel().getColumn(4).setPreferredWidth(270);
 
-    tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-        @Override
-        public Component getTableCellRendererComponent(JTable t, Object v,
-                boolean sel, boolean foc, int row, int col) {
-            super.getTableCellRendererComponent(t, v, sel, foc, row, col);
-            
-            // CORREGIDO: Ahora el tipo está en la columna 1 (antes estaba en la 2)
-            String tipo = (String) t.getModel().getValueAt(row, 1);
-            
-            setBackground(row % 2 == 0 ? BG_CARD2 : new Color(44, 44, 60));
-            setForeground("INGRESO".equals(tipo) ? GREEN : TEXT);
-            setBorder(new EmptyBorder(0, 8, 0, 8));
-            return this;
-        }
-    });
+        tabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable t, Object v,
+                    boolean sel, boolean foc, int row, int col) {
+                super.getTableCellRendererComponent(t, v, sel, foc, row, col);
 
-    JScrollPane scroll = new JScrollPane(tabla);
-    scroll.setBackground(BG_CARD);
-    scroll.getViewport().setBackground(BG_CARD2);
-    scroll.setBorder(BorderFactory.createEmptyBorder());
+                // CORREGIDO: Ahora el tipo está en la columna 1 (antes estaba en la 2)
+                String tipo = (String) t.getModel().getValueAt(row, 1);
 
-    card.add(tit,    BorderLayout.NORTH);
-    card.add(scroll, BorderLayout.CENTER);
-    return card;
-}
-    // ── ACTUALIZAR ────────────────────────────────────────────────────────────
+                setBackground(row % 2 == 0 ? BG_CARD2 : new Color(44, 44, 60));
+                setForeground("INGRESO".equals(tipo) ? GREEN : TEXT);
+                setBorder(new EmptyBorder(0, 8, 0, 8));
+                return this;
+            }
+        });
+
+        JScrollPane scroll = new JScrollPane(tabla);
+        scroll.setBackground(BG_CARD);
+        scroll.getViewport().setBackground(BG_CARD2);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+
+        card.add(tit, BorderLayout.NORTH);
+        card.add(scroll, BorderLayout.CENTER);
+        return card;
+    }
+
+
     private void actualizar(String ing, String gas, String bal, boolean critico, String[] movs,
-                             String alertaRechazo, String alertaPredictiva) {
-       
-                                
+            String alertaRechazo, String alertaPredictiva) {
+
         double dI = Double.parseDouble(ing);
         double dG = Double.parseDouble(gas);
         double dB = Double.parseDouble(bal);
@@ -613,7 +597,7 @@ private final Color[] coloresCategorias = {
         lblValBarraI.setText(fmt(dI) + " €");
         lblValBarraG.setText(fmt(dG) + " €");
         double ahorroRatio = dB / dI;          // cuánto ahorras
-        int score = (int)(ahorroRatio * 100);
+        int score = (int) (ahorroRatio * 100);
         score += 50;
         score = Math.max(0, Math.min(100, score));
         String estado;
@@ -622,16 +606,13 @@ private final Color[] coloresCategorias = {
         if (score >= 80) {
             estado = "Excellent";
             color = GREEN;
-        }
-        else if (score >= 60) {
+        } else if (score >= 60) {
             estado = "Good";
             color = BLUE;
-        }
-        else if (score >= 40) {
+        } else if (score >= 40) {
             estado = "Average";
             color = ORANGE;
-        }
-        else {
+        } else {
             estado = "Critical";
             color = RED;
         }
@@ -644,14 +625,15 @@ private final Color[] coloresCategorias = {
 
         barraHealth.setValue(score);
         barraHealth.setForeground(color);
+
         // Anchos proporcionales de las barras
         int max = 260;
 
         double total = dI + dG;
 
-        int anchoIngresos = total > 0 ? (int)((dI / total) * max): 0;
+        int anchoIngresos = total > 0 ? (int) ((dI / total) * max) : 0;
 
-        int anchoGastos = total > 0 ? (int)((dG / total) * max): 0;
+        int anchoGastos = total > 0 ? (int) ((dG / total) * max) : 0;
 
         Dimension dimIngresos = new Dimension(anchoIngresos, 10);
         Dimension dimGastos = new Dimension(anchoGastos, 10);
@@ -661,14 +643,12 @@ private final Color[] coloresCategorias = {
         barraIngresosPanel.setMinimumSize(dimIngresos);
 
         barraGastosPanel.setPreferredSize(dimGastos);
-        barraGastosPanel.setMaximumSize(dimGastos); 
+        barraGastosPanel.setMaximumSize(dimGastos);
         barraGastosPanel.setMinimumSize(dimGastos);
 
         barraIngresosPanel.revalidate();
         barraGastosPanel.revalidate();
 
-        //lblAlerta.setText(critico ? "⚠  Gastos críticos" : "✓  On track");
-        //lblAlerta.setForeground(critico ? RED : GREEN);
         if (critico) {
             // Si hay texto predictivo lo muestra, si no, usa el genérico
             lblAlerta.setText(alertaPredictiva.isEmpty() ? "⚠  Gastos críticos" : "⚠  " + alertaPredictiva);
@@ -684,22 +664,26 @@ private final Color[] coloresCategorias = {
 
         panelLeyenda.removeAll();
 
-piePlot.setNotify(false);
-for (String mov : movs) {
+        piePlot.setNotify(false);
+        for (String mov : movs) {
 
-    if (mov.isEmpty()) continue;
+            if (mov.isEmpty()) {
+                continue;
+            }
 
-    String[] c = mov.split(",");
+            String[] c = mov.split(",");
 
-    if (c.length < 4) continue;
+            if (c.length < 4) {
+                continue;
+            }
 
-    String textoAgente = c[0].trim(); 
-            String cantidad    = c[1].trim();
-            String tipo        = c[2].trim(); 
-            String categoria   = c[3].trim();
-            String dia         = "1"; // Por defecto
+            String textoAgente = c[0].trim();
+            String cantidad = c[1].trim();
+            String tipo = c[2].trim();
+            String categoria = c[3].trim();
+            String dia = "1"; // Por defecto
 
-            // 2. Extraemos el día del bloque de texto: "Texto (Dia X)"
+            // Extraemos el día del bloque de texto: "Texto (Dia X)"
             if (textoAgente.contains("(Dia ") && textoAgente.contains(")")) {
                 int indexDia = textoAgente.indexOf("(Dia ");
                 dia = textoAgente.substring(indexDia + 5, textoAgente.indexOf(")", indexDia)).trim();
@@ -707,65 +691,65 @@ for (String mov : movs) {
                 textoAgente = textoAgente.substring(0, indexDia).trim();
             }
 
-            // 3. Creamos la fila con vuestro orden estricto:
+            // Creamos la fila con vuestro orden estricto:
             // Día | Tipo | Categoría | Cantidad | Concepto
             String[] filaReordenada = {
-                dia, 
-                tipo, 
-                categoria, 
-                cantidad + " €", 
-                textoAgente // Muestra "Ingreso", "netflix", etc., según lo mande el agente
+                dia,
+                tipo,
+                categoria,
+                cantidad + " €",
+                textoAgente 
             };
-            
+
             modeloTabla.addRow(filaReordenada);
 
             // Gráfico de la Dona
             if ("GASTO".equals(tipo)) {
                 double v = Double.parseDouble(cantidad);
                 double prev = datasetDona.getKeys().contains(categoria)
-                    ? datasetDona.getValue(categoria).doubleValue()
-                    : 0;
+                        ? datasetDona.getValue(categoria).doubleValue()
+                        : 0;
                 datasetDona.setValue(categoria, prev + v);
             }
         }
         piePlot.setNotify(true);
-/* ---------- colores dinámicos ---------- */
 
-for (Object keyObj : datasetDona.getKeys()) {
+        /* ---------- colores dinámicos ---------- */
 
-    String categoria = keyObj.toString();
+        for (Object keyObj : datasetDona.getKeys()) {
 
-    if (categoria.equals("Sin datos")) continue;
+            String categoria = keyObj.toString();
 
-    Color colorCategoria = getColorCategoria(categoria);
+            if (categoria.equals("Sin datos")) {
+                continue;
+            }
 
-    piePlot.setSectionPaint(categoria, colorCategoria);
-    // leyenda
-    JPanel item = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 2));
-    item.setBackground(BG_CARD);
+            Color colorCategoria = getColorCategoria(categoria);
 
-    JPanel cuadrado = new JPanel();
-    cuadrado.setBackground(colorCategoria  );
-    cuadrado.setPreferredSize(new Dimension(12,12));
+            piePlot.setSectionPaint(categoria, colorCategoria);
+            // leyenda
+            JPanel item = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 2));
+            item.setBackground(BG_CARD);
 
-    JLabel nombre = plain(categoria, 12, TEXT);
+            JPanel cuadrado = new JPanel();
+            cuadrado.setBackground(colorCategoria);
+            cuadrado.setPreferredSize(new Dimension(12, 12));
 
-    item.add(cuadrado);
-    item.add(nombre);
+            JLabel nombre = plain(categoria, 12, TEXT);
 
-    panelLeyenda.add(item);
+            item.add(cuadrado);
+            item.add(nombre);
 
-}
+            panelLeyenda.add(item);
 
-panelLeyenda.revalidate();
-panelLeyenda.repaint();
+        }
+
+        panelLeyenda.revalidate();
+        panelLeyenda.repaint();
 
         ventana.revalidate();
         ventana.repaint();
 
-       /*  if (alertaRechazo != null && !alertaRechazo.trim().isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(ventana, alertaRechazo, "Movimiento Denegado", javax.swing.JOptionPane.WARNING_MESSAGE);
-        }*/
     }
 
     private Color getColorCategoria(String cat) {

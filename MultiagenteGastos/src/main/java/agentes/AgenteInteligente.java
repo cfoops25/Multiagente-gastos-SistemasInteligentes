@@ -46,7 +46,7 @@ public class AgenteInteligente extends Agent {
     @Override
     protected void setup() {
         System.out.println("Agente Inteligencia " + getLocalName() + " iniciado.");
-        
+        //Registro ontología y el codec de comunicación JADE
         try {
             ontologia = new BeanOntology("OntologiaGastos");
             ontologia.add("ontologia");
@@ -54,29 +54,25 @@ public class AgenteInteligente extends Agent {
             getContentManager().registerLanguage(new SLCodec());
         } catch (Exception e) { e.printStackTrace(); }
 
-        // ==========================================
-        // PASO 4: INICIALIZACIÓN Y ENTRENAMIENTO DE IA (WEKA)
-        // ==========================================
+        // INICIALIZACIÓN Y ENTRENAMIENTO DE Naive Bayes con Weka 
+       
         try {
-            // 1. Cargar el dataset 'gastos.arff' de la raíz del proyecto
             String rutaProyecto = System.getProperty("user.dir");
             String rutaCompleta = rutaProyecto + java.io.File.separator + "gastos.arff";
             DataSource source = new DataSource(rutaCompleta);
             Instances datosEntrenamiento = source.getDataSet();
-            
-            // Indicar que el último atributo ('categoria') es la clase objetivo a predecir
+
             datosEntrenamiento.setClassIndex(datosEntrenamiento.numAttributes() - 1);
 
-            // 2. Configurar el filtro para transformar la descripción de texto en atributos numéricos
+ 
             filtroTexto = new StringToWordVector();
             filtroTexto.setInputFormat(datosEntrenamiento);
             Instances datosFiltrados = Filter.useFilter(datosEntrenamiento, filtroTexto);
 
-            // 3. Entrenar el clasificador matemático Naive Bayes con los datos procesados
+
             clasificador = new NaiveBayes();
             clasificador.buildClassifier(datosFiltrados);
 
-            // Conservamos la estructura del dataset base vacía para construir predicciones futuras
             this.datasetEstructura = datosEntrenamiento;
             System.out.println("[IA] Naive Bayes entrenado correctamente con 'gastos.arff'. Listo para clasificar.");
 
@@ -84,8 +80,8 @@ public class AgenteInteligente extends Agent {
             System.out.println("[IA] Error crítico al inicializar Weka o cargar el dataset.");
             e.printStackTrace();
         }
-        // ==========================================
 
+        //Configuración de la Máquina de Estados Finitos (FSM)
         FSMBehaviour fsm = new FSMBehaviour(this);
 
         fsm.registerFirstState(new EstadoEvaluacion("AHORRO"), "AHORRO");
@@ -130,47 +126,36 @@ public class AgenteInteligente extends Agent {
 
         @Override
         public void action() {
-
-            
             MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
             ACLMessage msg = myAgent.receive(mt);
-            
             if (msg != null) {
                 try {
                     Transaccion t = (Transaccion) myAgent.getContentManager().extractContent(msg);
-                    
-                    // ==========================================
-                    // PASO 5: INFERENCIA DE IA EN TIEMPO REAL
-                    // ==========================================
-                    String conceptoUsuario = t.getCategoria().toLowerCase().trim();
 
-                    // 1. Crear una instancia virtual con la estructura del dataset
+                    String conceptoUsuario = t.getCategoria().toLowerCase().trim();
+                    // Inferencia en tiempo real pasando el filtro vectorial
                     Instance nuevaInstancia = new DenseInstance(2);
                     nuevaInstancia.setDataset(datasetEstructura);
-                    nuevaInstancia.setValue(0, conceptoUsuario); // Atributo 0: 'concepto'
+                    nuevaInstancia.setValue(0, conceptoUsuario); 
 
-                    // 2. Pasar el filtro de conversión vectorial a la instancia
                     filtroTexto.input(nuevaInstancia);
                     Instance instanciaFiltrada = filtroTexto.output();
 
-                    // 3. Ejecutar la clasificación predictiva
                     double prediccionIndice = clasificador.classifyInstance(instanciaFiltrada);
                     String categoriaPredicha = datasetEstructura.classAttribute().value((int) prediccionIndice);
 
                     System.out.println("\n [IA Predicción] Concepto: '" + conceptoUsuario + "' -> Clasificado como: " + categoriaPredicha);
                     
-                    // Sobreescribimos el objeto Transaccion con la categoría real descubierta por Weka
                     t.setCategoria(categoriaPredicha);
                     String motivoRechazo = "";
-                    // ==========================================
                     boolean transaccionAprobada = false;
+
                     // LÓGICA DE NEGOCIO INTEGRADA CON LA PREDICCIÓN DE IA
                     if ("Ingreso".equalsIgnoreCase(categoriaPredicha)) {
                         // LÓGICA DE INGRESOS
                         System.out.println("[" + nombreEstado + "] Procesando INGRESO de " + t.getMonto() + "€");
                         totalIngresos += t.getMonto();
                         
-                        // === CORREGIDO: Guardamos el concepto real introducido por el usuario ===
                         historialMovimientos.append(conceptoUsuario).append(" (Dia ").append(t.getDiaDelMes()).append("),")
                                             .append(t.getMonto()).append(",")
                                             .append("INGRESO").append(",")
@@ -180,10 +165,10 @@ public class AgenteInteligente extends Agent {
                     } 
                    
                     else {
-                        // LÓGICA DE GASTOS (Ocio, Necesidad o Ahorro)
+                        // LÓGICA DE GASTOS (Ocio, Necesidad, Ahorro u Otros)
                         System.out.println("[" + nombreEstado + "] Procesando GASTO de " + t.getMonto() + "€ tipo [" + categoriaPredicha + "]");
                         
-                        // 1. Alerta predictiva temporal
+                        // Generación de alerta predictiva basada en el ritmo de gasto actual y los ingresos totales
                         if (t.getDiaDelMes() > 0 && totalIngresos > 0) {
                             float gastoMedioDiario = (totalGastado + t.getMonto()) / t.getDiaDelMes();
                             float gastoProyectado = gastoMedioDiario * 30;
@@ -196,14 +181,8 @@ public class AgenteInteligente extends Agent {
                                 alertaPredictiva = "";
                             }
                         }
-                    /* 
-                    else if ("Otros".equalsIgnoreCase(categoriaPredicha)) {
-                        // NUEVO: Controlar el cajón de sastre de la IA
-                        motivoRechazo = "Concepto no reconocido por el sistema financiero.";
-                        System.out.println(" Rechazado por la FSM: " + motivoRechazo);
-                    }*/
 
-                        // 2. Evaluar aprobación restrictiva inteligente usando los estados FSM
+                        // Evaluar aprobación restrictiva inteligente usando los estados FSM
                         boolean aprobado = false;
                         if (nombreEstado.equals("AHORRO")) {
                             aprobado = true;
@@ -222,11 +201,8 @@ public class AgenteInteligente extends Agent {
                             }
                         } 
 
-                        // 3. Sumar el dinero real si fue validado por la política
                         if (aprobado) {
                             totalGastado += t.getMonto();
-                            
-                            // === CORREGIDO: Guardamos el concepto real introducido por el usuario ===
                             historialMovimientos.append(conceptoUsuario).append(" (Dia ").append(t.getDiaDelMes()).append("),")
                                                 .append(t.getMonto()).append(",")
                                                 .append("GASTO").append(",")
@@ -234,6 +210,7 @@ public class AgenteInteligente extends Agent {
                             transaccionAprobada = true;
                         }
                     }
+                    // Respuesta directa al emisor (Agente Percepción) con el resultado de la evaluación
                     ACLMessage respuesta = msg.createReply();
                     if (transaccionAprobada) {
                         respuesta.setPerformative(ACLMessage.INFORM);
