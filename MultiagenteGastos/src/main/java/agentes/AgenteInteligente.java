@@ -145,6 +145,7 @@ public class AgenteInteligente extends Agent {
                     
                     // Sobreescribimos el objeto Transaccion con la categoría real descubierta por Weka
                     t.setCategoria(categoriaPredicha);
+                    String motivoRechazo = "";
                     // ==========================================
 
                     // LÓGICA DE NEGOCIO INTEGRADA CON LA PREDICCIÓN DE IA
@@ -178,13 +179,15 @@ public class AgenteInteligente extends Agent {
                             aprobado = true;
                         } else if (nombreEstado.equals("PRECAUCION")) {
                             if (categoriaPredicha.equalsIgnoreCase("Ocio") && t.getMonto() > 100) {
-                                System.out.println(" Rechazado por la FSM: Gasto de Ocio excesivo (>100€) para estado de Precaución.");
+                                motivoRechazo = "Gasto de Ocio excesivo (>100€) para Precaución.";
+                                System.out.println(" Rechazado por la FSM: " + motivoRechazo);
                             } else { aprobado = true; }
                         } else if (nombreEstado.equals("CRITICO")) {
                             if (categoriaPredicha.equalsIgnoreCase("Necesidad")) {
                                 aprobado = true;
                             } else {
-                                System.out.println("Rechazado por la FSM: Modo crítico activo. Se bloquea el gasto por no ser una 'Necesidad'.");
+                                motivoRechazo = "Modo Crítico activo. Solo se permiten 'Necesidades'.";
+                                System.out.println("Rechazado por la FSM: " + motivoRechazo);
                             }
                         }
 
@@ -220,7 +223,8 @@ public class AgenteInteligente extends Agent {
                                               "|GASTOS:" + totalGastado + 
                                               "|BALANCE:" + balance + 
                                               "|CRITICO:" + esCritico + 
-                                              "|MOVIMIENTOS:" + historialMovimientos.toString();
+                                              "|MOVIMIENTOS:" + historialMovimientos.toString() +
+                                              "|RECHAZO:" + motivoRechazo;
                     
                     enviarAVisualizador(datosFormateados);
                     msgProcesado = true; 

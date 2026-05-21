@@ -89,8 +89,8 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
     }
 
     private void procesarMensaje(String contenido) {
-        System.out.println("📬 [DEBUG Dashboard] Mensaje recibido bruto: " + contenido);
-        String ing = "0", gas = "0", bal = "0";
+        System.out.println("[DEBUG Dashboard] Mensaje recibido bruto: " + contenido);
+        String ing = "0", gas = "0", bal = "0", rechazo = "";
         boolean critico = false;
         String[] movs = new String[0];
         for (String p : contenido.split("\\|")) {
@@ -98,15 +98,16 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
             if (p.startsWith("GASTOS:"))      gas    = p.replace("GASTOS:", "");
             if (p.startsWith("BALANCE:"))     bal    = p.replace("BALANCE:", "");
             if (p.startsWith("CRITICO:"))     critico = p.replace("CRITICO:", "").equals("true");
+            if (p.startsWith("RECHAZO:"))     rechazo = p.replace("RECHAZO:", "");
             if (p.startsWith("MOVIMIENTOS:")) {
                 String m = p.replace("MOVIMIENTOS:", "");
                 if (!m.isEmpty()) movs = m.split(";");
             }
         }
-        final String fI = ing, fG = gas, fB = bal;
+        final String fI = ing, fG = gas, fB = bal, fR = rechazo;
         final boolean fC = critico;
         final String[] fM = movs;
-        SwingUtilities.invokeLater(() -> actualizar(fI, fG, fB, fC, fM));
+        SwingUtilities.invokeLater(() -> actualizar(fI, fG, fB, fC, fM, fR));
     }
 
     // ── VENTANA ───────────────────────────────────────────────────────────────
@@ -555,7 +556,8 @@ private final Color[] coloresCategorias = {
 }
     // ── ACTUALIZAR ────────────────────────────────────────────────────────────
     private void actualizar(String ing, String gas, String bal,
-                             boolean critico, String[] movs) {
+                             boolean critico, String[] movs,
+                             String alertaRechazo) {
        
                                 
         double dI = Double.parseDouble(ing);
@@ -719,16 +721,22 @@ panelLeyenda.repaint();
 
         ventana.revalidate();
         ventana.repaint();
-    }
-private Color getColorCategoria(String cat) {
-    if (mapaColores.containsKey(cat)) {
-        return mapaColores.get(cat);
+
+        if (alertaRechazo != null && !alertaRechazo.trim().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(ventana, alertaRechazo, "Movimiento Denegado", javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
     }
 
-    Color c = coloresCategorias[mapaColores.size() % coloresCategorias.length];
-    mapaColores.put(cat, c);
-    return c;
-}
+    private Color getColorCategoria(String cat) {
+        if (mapaColores.containsKey(cat)) {
+            return mapaColores.get(cat);
+        }
+
+        Color c = coloresCategorias[mapaColores.size() % coloresCategorias.length];
+        mapaColores.put(cat, c);
+        return c;
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
     private String fmt(double v) {
         return String.format(java.util.Locale.US, "%.2f", v);
