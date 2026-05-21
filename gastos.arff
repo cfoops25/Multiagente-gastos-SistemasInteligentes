@@ -31,6 +31,54 @@
 'factura teléfono',Necesidad
 'peaje',Necesidad
 'taller',Necesidad
+'comunidad de vecinos',Necesidad
+'recibo comunidad',Necesidad
+'ibi',Necesidad
+'contribucion',Necesidad
+'contribución',Necesidad
+'tasa basuras',Necesidad
+'seguro medico',Necesidad
+'seguro de salud',Necesidad
+'seguro hogar',Necesidad
+'seguro de hogar',Necesidad
+'seguro vida',Necesidad
+'mutua',Necesidad
+'abono transporte',Necesidad
+'tarjeta transporte',Necesidad
+'renfe',Necesidad
+'billete tren',Necesidad
+'reparacion caldera',Necesidad
+'reparación caldera',Necesidad
+'revision gas',
+'revisión gas',Necesidad
+'butano',Necesidad
+'colegio',Necesidad
+'matricula universidad',Necesidad
+'matrícula universidad',Necesidad
+'guarderia',Necesidad
+'guardería',Necesidad
+'libros texto',Necesidad
+'comedor escolar',Necesidad
+'lupa supermercados',Necesidad
+'alcampo',Necesidad
+'hipercor',Necesidad
+'dia supermercado',Necesidad
+'aldi',Necesidad
+'consum',Necesidad
+'eroski',Necesidad
+'pequeño comercio',Necesidad
+'panaderia',Necesidad
+'fruteria',Necesidad
+'carniceria',Necesidad
+'pago comunidad',Necesidad
+'gasoleo calefaccion',Necesidad
+'gasóleo calefacción',Necesidad
+'clinica dental',Necesidad
+'óptica',Necesidad
+'optica',Necesidad
+'gafas',Necesidad
+'revision medica',Necesidad
+'revisión médica',Necesidad
 
 % --- CATEGORÍA: OCIO ---
 'cine',Ocio
@@ -60,6 +108,70 @@
 'taxi',Ocio
 'ropa',Ocio
 'zara',Ocio
+'glovo',Ocio
+'just eat',Ocio
+'uber eats',Ocio
+'comida a domicilio',Ocio
+'hbo max',Ocio
+'hbo',Ocio
+'max streaming',Ocio
+'prime video',Ocio
+'amazon prime',Ocio
+'disney plus',Ocio
+'disney+',Ocio
+'dazn',Ocio
+'movistar plus',Ocio
+'playstation network',Ocio
+'psn plus',Ocio
+'xbox live',Ocio
+'nintendo switch online',Ocio
+'shein',Ocio
+'temu',Ocio
+'aliexpress',Ocio
+'gimnasio',Ocio
+'cuota gym',Ocio
+'crossfit',Ocio
+'reserva pista padel',Ocio
+'reserva pista pádel',Ocio
+'entrada cine',Ocio
+'ticketmaster',Ocio
+'entradas concierto',Ocio
+'gastrobar',Ocio
+'taperia',
+'tapería',Ocio
+'pizzeria',
+'pizzería',Ocio
+'hamburgueseria',
+'hamburguesería',Ocio
+'starbucks',Ocio
+'copas amigos',Ocio
+'discoteca entrada',Ocio
+'festival abono',Ocio
+'hotel booking',Ocio
+'airbnb',Ocio
+'vueling',Ocio
+'ryanair',Ocio
+'iberia',Ocio
+'alquiler coche vacaciones',Ocio
+'free tour',Ocio
+'masaje',Ocio
+'spa',Ocio
+'peluqueria',
+'peluquería',Ocio
+'estetica',
+'estética',Ocio
+'tatuaje',Ocio
+'fnac',Ocio
+'casa del libro',Ocio
+'pago bizum cena',Ocio
+'bizum cervezas',Ocio
+'primark',Ocio
+'h&m',Ocio
+'mango tienda',Ocio
+'pull and bear',Ocio
+'bershka',Ocio
+'stradivarius',Ocio
+'decathlon',Ocio
 
 % --- CATEGORÍA: AHORRO ---
 'traspaso a cuenta ahorro',Ahorro
@@ -78,6 +190,32 @@
 'bitcoin',Ahorro
 'aportacion pensiones',Ahorro
 'aportación pensiones',Ahorro
+'fondos indexados',Ahorro
+'fondo indexado',Ahorro
+'myinvestor',Ahorro
+'indexa capital',Ahorro
+'cuenta remunerada',Ahorro
+'intereses reinvertidos',Ahorro
+'traspaso hucha',Ahorro
+'hucha digital',Ahorro
+'redondeo ahorros',Ahorro
+'plan pensiones',Ahorro
+'plan de pensiones',Ahorro
+'comprar etf',Ahorro
+'etf',Ahorro
+'broker',Ahorro
+'degiro',Ocio
+'trade republic',Ahorro
+'binance',Ahorro
+'coinbase',Ahorro
+'traspaso cartera',Ahorro
+'ahorro retencion',Ahorro
+'ahorro retención',Ahorro
+'plazo fijo bancario',Ahorro
+'deposito bancario',Ahorro
+'depósito bancario',Ahorro
+'guardar colchon',Ahorro
+'guardar colchón',Ahorro
 
 % --- CATEGORÍA: INGRESO ---
 'nomina',Ingreso
@@ -93,6 +231,35 @@
 'premio',Ingreso
 'beca',Ingreso
 'ingreso efectivo',Ingreso
+'pago bizum',Ingreso
+'bizum recibido',Ingreso
+'transferencia nomina',Ingreso
+'transferencia nómina',Ingreso
+'abono de haberes',Ingreso
+'pago de factura cliente',Ingreso
+'factura cobrada',Ingreso
+'ingreso cajero',Ingreso
+'ingreso efectivo ventanilla',Ingreso
+'intereses cuenta remunerada',Ingreso
+'cobro dividendos',Ingreso
+'dividendos acciones',Ingreso
+'pago wallapop',Ingreso
+'venta vinted',Ingreso
+'bizum alquiler compañeros',Ingreso
+'reembolso compra',Ingreso
+'abono devolucion',Ingreso
+'abono devolución',Ingreso
+'beca estudios',Ingreso
+'ayuda estatal',Ingreso
+'subvencion',Ingreso
+'subvención',Ingreso
+'pago hacienda',Ingreso
+'renta positiva',Ingreso
+'paga extra',Ingreso
+'incentivo',Ingreso
+'bonus',Ingreso
+'gratificacion',Ingreso
+'gratificación',Ingreso
 
 % --- CATEGORÍA: OTROS 
 'prueba',Otros
@@ -129,3 +296,25 @@
 'nada',Otros
 'vacio',Otros
 'vacío',Otros
+'comision bancaria',Otros
+'comisión bancaria',Otros
+'comision mantenimiento',Otros
+'comisión mantenimiento',Otros
+'gastos de gestion',Otros
+'gastos de gestión',Otros
+'correo bancario',Otros
+'ajuste de saldo',Otros
+'ajuste contable',Otros
+'regularizacion',Otros
+'regularización',Otros
+'gasto cajero',Otros
+'retirada efectivo',Otros
+'sacar dinero',Otros
+'pago pendiente sin clasificar',Otros
+'concepto erroneo',Otros
+'concepto erróneo',Otros
+'movimiento interno',Otros
+'traspaso entre cuentas',Otros
+'comisiones',Otros
+'gasto desconocido',Otros
+'no especificado',Otros
