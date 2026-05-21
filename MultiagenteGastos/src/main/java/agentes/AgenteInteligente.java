@@ -103,6 +103,19 @@ public class AgenteInteligente extends Agent {
         fsm.registerTransition("CRITICO", "CRITICO", IR_A_CRITICO);
 
         addBehaviour(fsm);
+
+        // Registrarse en el DF como servicio de clasificación
+        DFAgentDescription dfd = new DFAgentDescription();
+        dfd.setName(getAID());
+        ServiceDescription sd = new ServiceDescription();
+        sd.setType("clasificacion-gastos");
+        sd.setName("servicio-clasificacion");
+        dfd.addServices(sd);
+        try {
+            DFService.register(this, dfd);
+        } catch (FIPAException e) {
+            e.printStackTrace();
+        }
     }
 
     private class EstadoEvaluacion extends Behaviour {
@@ -114,7 +127,7 @@ public class AgenteInteligente extends Agent {
 
         @Override
         public void action() {
-            msgProcesado = false; 
+
             
             MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
             ACLMessage msg = myAgent.receive(mt);
@@ -126,7 +139,7 @@ public class AgenteInteligente extends Agent {
                     // ==========================================
                     // PASO 5: INFERENCIA DE IA EN TIEMPO REAL
                     // ==========================================
-                    String conceptoUsuario = t.getCategoria(); // El AgentePercepcion metió el texto libre aquí
+                    String conceptoUsuario = t.getCategoria().toLowerCase().trim(); // El AgentePercepcion metió el texto libre aquí
 
                     // 1. Crear una instancia virtual con la estructura del dataset
                     Instance nuevaInstancia = new DenseInstance(2);
@@ -159,7 +172,14 @@ public class AgenteInteligente extends Agent {
                                             .append(t.getMonto()).append(",")
                                             .append("INGRESO").append(",")
                                             .append(categoriaPredicha).append(";");
-                    } else {
+
+                    } 
+                    else if ("Otros".equalsIgnoreCase(categoriaPredicha)) {
+                    // NUEVO: Controlar el cajón de sastre de la IA
+                    motivoRechazo = "Concepto no reconocido por el sistema financiero.";
+                    System.out.println(" Rechazado por la FSM: " + motivoRechazo);
+}
+                    else {
                         // LÓGICA DE GASTOS (Ocio, Necesidad o Ahorro)
                         System.out.println("[" + nombreEstado + "] Procesando GASTO de " + t.getMonto() + "€ tipo [" + categoriaPredicha + "]");
                         
@@ -229,22 +249,31 @@ public class AgenteInteligente extends Agent {
                     enviarAVisualizador(datosFormateados);
                     msgProcesado = true; 
 
-                } catch (Exception e) { e.printStackTrace(); }
-            } else { block(); }
+                } catch (Exception e) { 
+                    e.printStackTrace(); 
+                }
+            } else { 
+                block();
+             }
         }
 
         @Override
-        public boolean done() { return msgProcesado; }
+        public boolean done() { 
+            return msgProcesado; 
+        }
 
         @Override
-        public int onEnd() { return eventoSalida; }
+        public int onEnd() { 
+            msgProcesado = false; 
+            return eventoSalida;
+         }
     }
 
     public void enviarAVisualizador(String texto) {
         try {
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sd = new ServiceDescription();
-            sd.setType("visualizacion-gastos");
+            sd.setType("visualizacion-gastos"); 
             template.addServices(sd);
             
             DFAgentDescription[] result = DFService.search(this, template);
@@ -253,8 +282,23 @@ public class AgenteInteligente extends Agent {
                 ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
                 msg.addReceiver(result[0].getName());
                 msg.setContent(texto);
+                msg.setConversationId("datos-financieros");
                 send(msg);
+                System.out.println("[DF] Datos financieros enviados dinámicamente al Agente Visualización.");
+            } else {
+                // Control preventivo por consola
+                System.out.println("[ERROR DF] Agente Inteligente no encontró ningún servicio de 'visualizacion-gastos'.");
             }
-        } catch (FIPAException e) { e.printStackTrace(); }
+        } catch (FIPAException e) { 
+            e.printStackTrace(); 
+        }
+    }
+    @Override
+    protected void takeDown() {
+        try {
+            DFService.deregister(this);
+        } catch (FIPAException e) {
+            e.printStackTrace();
+        }
     }
 }

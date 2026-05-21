@@ -1,55 +1,130 @@
 @relation gastos_e_ingresos
 
 @attribute concepto string
-@attribute categoria {Necesidad,Ocio,Ahorro,Ingreso}
+@attribute categoria {Necesidad,Ocio,Ahorro,Ingreso,Otros}
 
 @data
 % --- CATEGORÍA: NECESIDAD ---
-'Mercadona',Necesidad
 'mercadona',Necesidad
-'Carrefour',Necesidad
-'Lidl',Necesidad
+'carrefour',Necesidad
 'lidl',Necesidad
 'compra supermercado',Necesidad
-'Farmacia',Necesidad
 'farmacia',Necesidad
-'Medico',Necesidad
-'Alquiler',Necesidad
+'medico',Necesidad
+'médico',Necesidad
 'alquiler',Necesidad
 'pago del alquiler',Necesidad
-'Luz',Necesidad
+'luz',Necesidad
 'factura luz',Necesidad
-'Gas',Necesidad
+'gas',Necesidad
+'agua',Necesidad
+'gasolina',Necesidad
+'gasolinera',Necesidad
+'metro',Necesidad
+'autobus',Necesidad
+'autobús',Necesidad
+'hipoteca',Necesidad
+'dentista',Necesidad
+'seguro coche',Necesidad
+'internet',Necesidad
+'factura telefono',Necesidad
+'factura teléfono',Necesidad
+'peaje',Necesidad
 
 % --- CATEGORÍA: OCIO ---
-'Cine',Ocio
 'cine',Ocio
 'cine con amigos',Ocio
-'Bar',Ocio
 'bar',Ocio
 'cervezas',Ocio
 'copas',Ocio
-'Netflix',Ocio
 'netflix',Ocio
-'Spotify',Ocio
-'Restaurante',Ocio
+'spotify',Ocio
 'restaurante',Ocio
 'cena',Ocio
 'concierto',Ocio
+'discoteca',Ocio
+'pub',Ocio
+'entrada festival',Ocio
+'videojuego',Ocio
+'playstation',Ocio
+'steam',Ocio
+'viaje',Ocio
+'hotel',Ocio
+'vuelo',Ocio
+'cafe',Ocio
+'café',Ocio
+'mcdonalds',Ocio
+'burger king',Ocio
+'uber',Ocio
+'taxi',Ocio
+'ropa',Ocio
+'zara',Ocio
 
 % --- CATEGORÍA: AHORRO ---
-'Traspaso a cuenta ahorro',Ahorro
+'traspaso a cuenta ahorro',Ahorro
 'ahorro',Ahorro
 'ahorros',Ahorro
-'Compra acciones',Ahorro
+'compra acciones',Ahorro
 'inversion',Ahorro
+'inversión',Ahorro
 'hucha',Ahorro
 'ahorro viaje',Ahorro
 'guardar dinero',Ahorro
+'plazo fijo',Ahorro
+'fondo de inversion',Ahorro
+'fondo de inversión',Ahorro
+'criptomonedas',Ahorro
+'bitcoin',Ahorro
+'aportacion pensiones',Ahorro
+'aportación pensiones',Ahorro
 
 % --- CATEGORÍA: INGRESO ---
-'Nómina',Ingreso
 'nomina',Ingreso
-'Bizum de mi madre',Ingreso
-'Bizum',Ingreso
+'nómina',Ingreso
+'bizum de mi madre',Ingreso
 'bizum',Ingreso
+'salario',Ingreso
+'sueldo',Ingreso
+'transferencia recibida',Ingreso
+'devolucion hacienda',Ingreso
+'devolución hacienda',Ingreso
+'venta wallapop',Ingreso
+'premio',Ingreso
+'beca',Ingreso
+'ingreso efectivo',Ingreso
+
+% --- CATEGORÍA: OTROS 
+'prueba',Otros
+'test',Otros
+'cosa',Otros
+'desconocido',Otros
+'asdf',Otros
+'xyz',Otros
+'random',Otros
+'palabra',Otros
+'objeto',Otros
+'reparacion',Otros
+'reparación',Otros
+'herramienta',Otros
+'poción de invisibilidad',Otros
+'pocion',Otros
+'invisibilidad',Otros
+'varita mágica',Otros
+'criptonita verde',Otros
+'nave espacial',Otros
+'comprar un dinosaurio',Otros
+'alienígena',Otros
+'qwerty',Otros
+'zxcvbnm',Otros
+'hjkl',Otros
+'texto inventado',Otros
+'concepto loco',Otros
+'frase sin sentido alguno',Otros
+'comprar unicornio',Otros
+'multiverso',Otros
+'teletransporte',Otros
+'viaje en el tiempo',Otros
+'error del sistema',Otros
+'nada',Otros
+'vacio',Otros
+'vacío',Otros

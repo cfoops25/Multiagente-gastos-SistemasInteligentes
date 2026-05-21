@@ -94,7 +94,7 @@ public class PercepcionGUI extends JFrame {
             txtConcepto.setText("");
             txtDia.setText("");
             
-            JOptionPane.showMessageDialog(this, "Movimiento enviado. Clasificando mediante IA...", "Procesando", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
             
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Error: La cantidad y el día deben ser números válidos.", "Error de formato", JOptionPane.ERROR_MESSAGE);

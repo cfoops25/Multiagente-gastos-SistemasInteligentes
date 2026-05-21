@@ -83,9 +83,20 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
     // ── JADE ─────────────────────────────────────────────────────────────────
     @Override
     public void action() {
-        MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
-        ACLMessage msg = myAgent.blockingReceive(mt);
-        if (msg != null) procesarMensaje(msg.getContent());
+        MessageTemplate mt = MessageTemplate.and(
+            MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+            MessageTemplate.MatchConversationId("datos-financieros")
+        );
+        ACLMessage msg = myAgent.receive(mt);
+        
+        if (msg != null) {
+            String contenido = msg.getContent();
+            if (contenido != null) {
+                procesarMensaje(contenido);
+            }
+        } else {
+            block(); 
+        }
     }
 
     private void procesarMensaje(String contenido) {
@@ -115,7 +126,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         ventana = new JFrame("Personal Finance Dashboard");
         ventana.setSize(1280, 760);
         ventana.setMinimumSize(new Dimension(900, 600));
-        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventana.setLocationRelativeTo(null);
 
         JPanel root = new JPanel(new BorderLayout(0, 0));
@@ -165,10 +176,31 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         btnPeriod.setFocusPainted(false);
 
         btnPeriod.addActionListener(e -> {
-            ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
-            msg.addReceiver(new jade.core.AID("percepcion", jade.core.AID.ISLOCALNAME));
-            msg.setContent("ABRIR_VENTANA");
-            myAgent.send(msg);
+            try {
+                ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+                msg.setContent("ABRIR_VENTANA");
+
+                // Creamos la plantilla con el tipo que registramos en AgentePercepcion
+                jade.domain.FIPAAgentManagement.DFAgentDescription template = new jade.domain.FIPAAgentManagement.DFAgentDescription();
+                jade.domain.FIPAAgentManagement.ServiceDescription sd = new jade.domain.FIPAAgentManagement.ServiceDescription();
+                sd.setType("percepcion-gastos"); 
+                template.addServices(sd);
+
+                // Buscamos en las páginas amarillas utilizando el objeto 'myAgent' de este Behaviour
+                jade.domain.FIPAAgentManagement.DFAgentDescription[] result = jade.domain.DFService.search(myAgent, template);
+
+                if (result.length > 0) {
+                    // Añadimos como receptor al AID encontrado de forma dinámica
+                    msg.addReceiver(result[0].getName());
+                    msg.setConversationId("abrir-interfaz");
+                    myAgent.send(msg);
+                    System.out.println("[DF] Dashboard solicitó abrir ventana al Agente Percepción encontrado.");
+                } else {
+                    System.out.println("[ERROR DF] Dashboard no encontró ningún agente con el servicio 'percepcion-gastos'.");
+                }
+            } catch (jade.domain.FIPAException fe) {
+                fe.printStackTrace();
+            }
         });
 
         lblAlerta = new JLabel("Esperando datos...");
