@@ -3,6 +3,7 @@ package Comportamientos;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.time.YearMonth;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -79,11 +80,17 @@ public class PercepcionGUI extends JFrame {
             float monto = Float.parseFloat(txtMonto.getText().replace(",", "."));
             String concepto = txtConcepto.getText().trim();
             int dia = Integer.parseInt(txtDia.getText().trim());
+            int diasDelMesActual = YearMonth.now().lengthOfMonth();
 
             if (concepto.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, introduce un concepto.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            if(dia<1 || dia>diasDelMesActual){
+                JOptionPane.showMessageDialog(this, "El día debe estar entre 1 y " + diasDelMesActual + " para el mes actual.", "Día inválido", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
 
             // Enviamos los datos al agente de percepción. 
             // Pasamos "PENDIENTE" como tipo por defecto
