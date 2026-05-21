@@ -58,7 +58,9 @@ public class AgenteInteligente extends Agent {
         // ==========================================
         try {
             // 1. Cargar el dataset 'gastos.arff' de la raíz del proyecto
-            DataSource source = new DataSource("gastos.arff");
+            String rutaProyecto = System.getProperty("user.dir");
+            String rutaCompleta = rutaProyecto + java.io.File.separator + "gastos.arff";
+            DataSource source = new DataSource(rutaCompleta);
             Instances datosEntrenamiento = source.getDataSet();
             
             // Indicar que el último atributo ('categoria') es la clase objetivo a predecir
