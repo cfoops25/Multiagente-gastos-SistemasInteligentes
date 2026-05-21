@@ -684,7 +684,7 @@ private final Color[] coloresCategorias = {
 
         panelLeyenda.removeAll();
 
-
+piePlot.setNotify(false);
 for (String mov : movs) {
 
     if (mov.isEmpty()) continue;
@@ -728,6 +728,7 @@ for (String mov : movs) {
                 datasetDona.setValue(categoria, prev + v);
             }
         }
+        piePlot.setNotify(true);
 /* ---------- colores dinámicos ---------- */
 
 for (Object keyObj : datasetDona.getKeys()) {
@@ -762,9 +763,9 @@ panelLeyenda.repaint();
         ventana.revalidate();
         ventana.repaint();
 
-        if (alertaRechazo != null && !alertaRechazo.trim().isEmpty()) {
+       /*  if (alertaRechazo != null && !alertaRechazo.trim().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(ventana, alertaRechazo, "Movimiento Denegado", javax.swing.JOptionPane.WARNING_MESSAGE);
-        }
+        }*/
     }
 
     private Color getColorCategoria(String cat) {

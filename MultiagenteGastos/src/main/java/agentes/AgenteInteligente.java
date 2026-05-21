@@ -132,7 +132,7 @@ public class AgenteInteligente extends Agent {
         public void action() {
 
             
-            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+            MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
             ACLMessage msg = myAgent.receive(mt);
             
             if (msg != null) {
@@ -163,7 +163,7 @@ public class AgenteInteligente extends Agent {
                     t.setCategoria(categoriaPredicha);
                     String motivoRechazo = "";
                     // ==========================================
-
+                    boolean transaccionAprobada = false;
                     // LÓGICA DE NEGOCIO INTEGRADA CON LA PREDICCIÓN DE IA
                     if ("Ingreso".equalsIgnoreCase(categoriaPredicha)) {
                         // LÓGICA DE INGRESOS
@@ -175,6 +175,7 @@ public class AgenteInteligente extends Agent {
                                             .append(t.getMonto()).append(",")
                                             .append("INGRESO").append(",")
                                             .append(categoriaPredicha).append(";");
+                        transaccionAprobada = true;
 
                     } 
                    
@@ -230,8 +231,18 @@ public class AgenteInteligente extends Agent {
                                                 .append(t.getMonto()).append(",")
                                                 .append("GASTO").append(",")
                                                 .append(categoriaPredicha).append(";");
+                            transaccionAprobada = true;
                         }
                     }
+                    ACLMessage respuesta = msg.createReply();
+                    if (transaccionAprobada) {
+                        respuesta.setPerformative(ACLMessage.INFORM);
+                        respuesta.setContent("OK");
+                    } else {
+                        respuesta.setPerformative(ACLMessage.REFUSE);
+                        respuesta.setContent(motivoRechazo);
+                    }
+                    myAgent.send(respuesta);
 
                     // Calcular dinámicamente la transición al próximo estado financiero
                     float porcentajeGastado = (totalIngresos > 0) ? (totalGastado / totalIngresos) : 1.0f;

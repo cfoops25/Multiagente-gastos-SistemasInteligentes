@@ -6,6 +6,7 @@ import Comportamientos.PercepcionGUI;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.BeanOntology;
 import jade.core.Agent;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -83,7 +84,8 @@ public class AgentePercepcion extends Agent {
             t.setDiaDelMes(dia);
 
             // Preparamos el mensaje
-            ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+            ACLMessage msg = new ACLMessage(ACLMessage.REQUEST);
+            msg.setConversationId("transaccion-" + System.currentTimeMillis());
             DFAgentDescription template = new DFAgentDescription();
             ServiceDescription sd = new ServiceDescription();
             sd.setType("clasificacion-gastos");
@@ -103,13 +105,48 @@ public class AgentePercepcion extends Agent {
             send(msg);
             
             // Ocultamos la ventana emergente automáticamente tras enviar los datos
-            SwingUtilities.invokeLater(() -> ventanaGUI.setVisible(false));
+           // SwingUtilities.invokeLater(() -> ventanaGUI.setVisible(false));
+           addBehaviour(new ReceiveReplyBehaviour(msg.getConversationId()));
             
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    private class ReceiveReplyBehaviour extends Behaviour {
+        private MessageTemplate mt;
+        private boolean terminado = false;
 
+        public ReceiveReplyBehaviour(String convId) {
+            // Filtramos para escuchar solo la respuesta a nuestro mensaje específico
+            mt = MessageTemplate.MatchConversationId(convId);
+        }
+
+        @Override
+        public void action() {
+            ACLMessage reply = myAgent.receive(mt);
+            if (reply != null) {
+                if (reply.getPerformative() == ACLMessage.INFORM) {
+                    System.out.println("[Percepcion] Éxito: Transacción aceptada.");
+                    // Si se acepta, ocultamos la ventana
+                    SwingUtilities.invokeLater(() -> ventanaGUI.registrarExito());
+                    
+                } else if (reply.getPerformative() == ACLMessage.REFUSE) {
+                    String motivo = reply.getContent();
+                    System.out.println("[Percepcion] Denegado: " + motivo);
+                    SwingUtilities.invokeLater(() -> ventanaGUI.registrarDenegacion(motivo));
+                    // Aquí la ventana se queda abierta. 
+                    // Opcional: podrías llamar a un método de tu PercepcionGUI para mostrar el error al usuario.
+
+                }
+                terminado = true;
+            } else {
+                block();
+            }
+        }
+
+        @Override
+        public boolean done() { return terminado; }
+    }
     // Al cerrar el agente, nos aseguramos de destruir la ventana para liberar memoria
     @Override
     protected void takeDown() {

@@ -96,15 +96,24 @@ public class PercepcionGUI extends JFrame {
             // Pasamos "PENDIENTE" como tipo por defecto
             miAgente.enviarDatos("PENDIENTE", monto, concepto, dia);
 
-            // Limpiamos el formulario para el siguiente uso
-            txtMonto.setText("");
-            txtConcepto.setText("");
-            txtDia.setText("");
-            
-            dispose();
+    
             
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Error: La cantidad y el día deben ser números válidos.", "Error de formato", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    public void registrarExito() {
+        txtMonto.setText("");
+        txtConcepto.setText("");
+        txtDia.setText("");
+        setVisible(false); // Ocultamos la ventana de forma segura
+    }
+    public void registrarDenegacion(String motivo) {
+        JOptionPane.showMessageDialog(
+            this, 
+            "El sistema financiero ha rechazado este movimiento:\n" + motivo, 
+            "Movimiento Denegado (FSM)", 
+            JOptionPane.WARNING_MESSAGE
+        );
     }
 }
