@@ -6,34 +6,79 @@
 @data
 % --- CATEGORÍA: NECESIDAD ---
 'mercadona',Necesidad
+'compra mercadona',Necesidad
+'ticket mercadona',Necesidad
+'supermercado mercadona',Necesidad
 'carrefour',Necesidad
+'compra carrefour',Necesidad
+'supermercado carrefour',Necesidad
+'carrefour express',Necesidad
 'lidl',Necesidad
+'compra lidl',Necesidad
+'supermercado lidl',Necesidad
+'ticket lidl',Necesidad
 'compra supermercado',Necesidad
+'ticket supermercado',Necesidad
 'farmacia',Necesidad
+'compra farmacia',Necesidad
+'ticket farmacia',Necesidad
 'medico',Necesidad
 'médico',Necesidad
+'consulta medico',Necesidad
 'alquiler',Necesidad
+'pago alquiler',Necesidad
 'pago del alquiler',Necesidad
+'recibo alquiler',Necesidad
+'mensualidad alquiler',Necesidad
 'luz',Necesidad
 'factura luz',Necesidad
+'recibo luz',Necesidad
 'gas',Necesidad
+'factura gas',Necesidad
+'recibo gas',Necesidad
 'agua',Necesidad
+'factura agua',Necesidad
+'recibo agua',Necesidad
 'gasolina',Necesidad
 'gasolinera',Necesidad
+'repostaje gasolina',Necesidad
+'ticket gasolinera',Necesidad
 'metro',Necesidad
+'abono transporte',Necesidad
+'tarjeta transporte',Necesidad
 'autobus',Necesidad
 'autobús',Necesidad
+'bus',Necesidad
+'billete autobus',Necesidad
+'renfe',Necesidad
+'billete tren',Necesidad
 'hipoteca',Necesidad
+'pago hipoteca',Necesidad
+'cuota hipoteca',Necesidad
+'recibo hipoteca',Necesidad
 'dentista',Necesidad
+'pago dentista',Necesidad
+'clinica dental',Necesidad
 'seguro coche',Necesidad
+'pago seguro coche',Necesidad
 'internet',Necesidad
+'factura internet',Necesidad
 'factura telefono',Necesidad
 'factura teléfono',Necesidad
+'recibo telefonia',Necesidad
 'peaje',Necesidad
+'pago peaje',Necesidad
 'taller',Necesidad
+'factura taller',Necesidad
+'taller mecanico',Necesidad
+'taller mecánico',Necesidad
+'reparacion coche taller',Necesidad
+'taller coche',Necesidad
 'comunidad de vecinos',Necesidad
 'recibo comunidad',Necesidad
+'pago comunidad',Necesidad
 'ibi',Necesidad
+'recibo ibi',Necesidad
 'contribucion',Necesidad
 'contribución',Necesidad
 'tasa basuras',Necesidad
@@ -43,20 +88,20 @@
 'seguro de hogar',Necesidad
 'seguro vida',Necesidad
 'mutua',Necesidad
-'abono transporte',Necesidad
-'tarjeta transporte',Necesidad
-'renfe',Necesidad
-'billete tren',Necesidad
 'reparacion caldera',Necesidad
 'reparación caldera',Necesidad
 'revision gas',Necesidad
 'revisión gas',Necesidad
 'butano',Necesidad
+'bombona butano',Necesidad
 'colegio',Necesidad
+'cuota colegio',Necesidad
+'pago colegio',Necesidad
 'matricula universidad',Necesidad
 'matrícula universidad',Necesidad
 'guarderia',Necesidad
 'guardería',Necesidad
+'pago guarderia',Necesidad
 'libros texto',Necesidad
 'comedor escolar',Necesidad
 'lupa supermercados',Necesidad
@@ -70,39 +115,45 @@
 'panaderia',Necesidad
 'fruteria',Necesidad
 'carniceria',Necesidad
-'pago comunidad',Necesidad
 'gasoleo calefaccion',Necesidad
 'gasóleo calefacción',Necesidad
-'clinica dental',Necesidad
 'óptica',Necesidad
 'optica',Necesidad
 'gafas',Necesidad
 'revision medica',Necesidad
-'taller mecanico',Necesidad
-'taller mecánico',Necesidad
-'factura taller',Necesidad
-'reparacion coche taller',Necesidad
-'taller coche',Necesidad
-% --- CATEGORÍA: OCIO ---
+
+% --- CATEGORÍA: OCIO (Sin inflar demasiado para mantener el equilibrio) ---
 'cine',Ocio
 'cine con amigos',Ocio
+'entrada cine',Ocio
 'bar',Ocio
 'cervezas',Ocio
 'copas',Ocio
+'copas amigos',Ocio
 'netflix',Ocio
+'suscripcion netflix',Ocio
 'spotify',Ocio
 'restaurante',Ocio
 'cena',Ocio
+'comida restaurante',Ocio
 'concierto',Ocio
+'entradas concierto',Ocio
 'discoteca',Ocio
+'discoteca entrada',Ocio
 'pub',Ocio
 'entrada festival',Ocio
+'festival abono',Ocio
 'videojuego',Ocio
 'playstation',Ocio
 'steam',Ocio
 'viaje',Ocio
 'hotel',Ocio
+'hotel booking',Ocio
+'airbnb',Ocio
 'vuelo',Ocio
+'vueling',Ocio
+'ryanair',Ocio
+'iberia',Ocio
 'cafe',Ocio
 'café',Ocio
 'mcdonalds',Ocio
@@ -110,6 +161,7 @@
 'uber',Ocio
 'taxi',Ocio
 'ropa',Ocio
+'compra ropa',Ocio
 'zara',Ocio
 'glovo',Ocio
 'just eat',Ocio
@@ -136,9 +188,7 @@
 'crossfit',Ocio
 'reserva pista padel',Ocio
 'reserva pista pádel',Ocio
-'entrada cine',Ocio
 'ticketmaster',Ocio
-'entradas concierto',Ocio
 'gastrobar',Ocio
 'taperia',Ocio
 'tapería',Ocio
@@ -147,14 +197,6 @@
 'hamburgueseria',Ocio
 'hamburguesería',Ocio
 'starbucks',Ocio
-'copas amigos',Ocio
-'discoteca entrada',Ocio
-'festival abono',Ocio
-'hotel booking',Ocio
-'airbnb',Ocio
-'vueling',Ocio
-'ryanair',Ocio
-'iberia',Ocio
 'alquiler coche vacaciones',Ocio
 'free tour',Ocio
 'masaje',Ocio
@@ -180,30 +222,34 @@
 'traspaso a cuenta ahorro',Ahorro
 'ahorro',Ahorro
 'ahorros',Ahorro
+'traspaso ahorro',Ahorro
 'compra acciones',Ahorro
 'inversion',Ahorro
 'inversión',Ahorro
+'aportacion inversion',Ahorro
 'hucha',Ahorro
+'traspaso hucha',Ahorro
 'ahorro viaje',Ahorro
 'guardar dinero',Ahorro
 'plazo fijo',Ahorro
+'plazo fijo bancario',Ahorro
 'fondo de inversion',Ahorro
 'fondo de inversión',Ahorro
 'criptomonedas',Ahorro
+'compra criptomonedas',Ahorro
 'bitcoin',Ahorro
 'aportacion pensiones',Ahorro
 'aportación pensiones',Ahorro
+'plan pensiones',Ahorro
+'plan de pensiones',Ahorro
 'fondos indexados',Ahorro
 'fondo indexado',Ahorro
 'myinvestor',Ahorro
 'indexa capital',Ahorro
 'cuenta remunerada',Ahorro
 'intereses reinvertidos',Ahorro
-'traspaso hucha',Ahorro
 'hucha digital',Ahorro
 'redondeo ahorros',Ahorro
-'plan pensiones',Ahorro
-'plan de pensiones',Ahorro
 'comprar etf',Ahorro
 'etf',Ahorro
 'broker',Ahorro
@@ -214,7 +260,6 @@
 'traspaso cartera',Ahorro
 'ahorro retencion',Ahorro
 'ahorro retención',Ahorro
-'plazo fijo bancario',Ahorro
 'deposito bancario',Ahorro
 'depósito bancario',Ahorro
 'guardar colchon',Ahorro
@@ -223,42 +268,47 @@
 % --- CATEGORÍA: INGRESO ---
 'nomina',Ingreso
 'nómina',Ingreso
-'bizum de mi madre',Ingreso
-'bizum',Ingreso
-'salario',Ingreso
-'sueldo',Ingreso
-'transferencia recibida',Ingreso
-'devolucion hacienda',Ingreso
-'devolución hacienda',Ingreso
-'venta wallapop',Ingreso
-'premio',Ingreso
-'beca',Ingreso
-'ingreso efectivo',Ingreso
-'pago bizum',Ingreso
-'bizum recibido',Ingreso
+'cobro nomina',Ingreso
+'ingreso nomina',Ingreso
 'transferencia nomina',Ingreso
 'transferencia nómina',Ingreso
+'bizum de mi madre',Ingreso
+'bizum',Ingreso
+'bizum recibido',Ingreso
+'cobro bizum',Ingreso
+'pago bizum',Ingreso
+'salario',Ingreso
+'sueldo',Ingreso
 'abono de haberes',Ingreso
-'pago de factura cliente',Ingreso
-'factura cobrada',Ingreso
+'transferencia recibida',Ingreso
+'ingreso transferencia',Ingreso
+'devolucion hacienda',Ingreso
+'devolución hacienda',Ingreso
+'pago hacienda',Ingreso
+'renta positiva',Ingreso
+'venta wallapop',Ingreso
+'pago wallapop',Ingreso
+'venta vinted',Ingreso
+'premio',Ingreso
+'beca',Ingreso
+'beca estudios',Ingreso
+'ingreso efectivo',Ingreso
 'ingreso cajero',Ingreso
 'ingreso efectivo ventanilla',Ingreso
+'pago de factura cliente',Ingreso
+'factura cobrada',Ingreso
 'intereses cuenta remunerada',Ingreso
 'cobro dividendos',Ingreso
 'dividendos acciones',Ingreso
-'pago wallapop',Ingreso
-'venta vinted',Ingreso
 'bizum alquiler compañeros',Ingreso
 'reembolso compra',Ingreso
 'abono devolucion',Ingreso
 'abono devolución',Ingreso
-'beca estudios',Ingreso
 'ayuda estatal',Ingreso
 'subvencion',Ingreso
 'subvención',Ingreso
-'pago hacienda',Ingreso
-'renta positiva',Ingreso
 'paga extra',Ingreso
+'cobro paga extra',Ingreso
 'incentivo',Ingreso
 'bonus',Ingreso
 'gratificacion',Ingreso

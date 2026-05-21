@@ -134,7 +134,7 @@ public class AgenteInteligente extends Agent {
 
                     String conceptoUsuario = t.getCategoria().toLowerCase().trim();
                     // Inferencia en tiempo real pasando el filtro vectorial
-                    Instance nuevaInstancia = new DenseInstance(2);
+                    Instance nuevaInstancia = new DenseInstance(datasetEstructura.numAttributes());
                     nuevaInstancia.setDataset(datasetEstructura);
                     nuevaInstancia.setValue(0, conceptoUsuario); 
 
