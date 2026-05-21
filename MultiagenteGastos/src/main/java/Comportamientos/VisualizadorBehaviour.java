@@ -123,7 +123,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
 
     // MÓDULOS GUI
     private void crearVentana() {
-        ventana = new JFrame("Personal Finance Dashboard");
+        ventana = new JFrame("Panel de Finanzas Personales");
         ventana.setSize(1280, 760);
         ventana.setMinimumSize(new Dimension(900, 600));
         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -140,7 +140,6 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         ventana.setVisible(true);
     }
 
-  
     private JPanel crearHeader() {
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(BG_DARK);
@@ -256,9 +255,9 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         lblGastos   = new JLabel("-");
         lblBalance  = new JLabel("-");
 
-        fila.add(crearKPI("Income", lblIngresos, GREEN,  "↑"));
-        fila.add(crearKPI("Expenses", lblGastos, RED,    "↓"));
-        fila.add(crearKPI("Net",    lblBalance,  GREEN,  "+"));
+        fila.add(crearKPI("Ingresos", lblIngresos, GREEN,  "↑"));
+        fila.add(crearKPI("Gastos", lblGastos, RED,    "↓"));
+        fila.add(crearKPI("Neto",    lblBalance,  GREEN,  "+"));
         return fila;
     }
 
@@ -308,9 +307,9 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         card.setBackground(BG_CARD);
         card.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        JLabel titulo = bold("Financial Health", 15, Color.WHITE);
+        JLabel titulo = bold("Salud Financiera", 15, Color.WHITE);
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JLabel sub = plain("Based on income vs expenses", 11, SUBTEXT);
+        JLabel sub = plain("Basado en Ingresos vs Gastos", 11, SUBTEXT);
         sub.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         lblHealthScore = new JLabel("0/100");
@@ -318,7 +317,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         lblHealthScore.setForeground(GREEN);
         lblHealthScore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        lblHealthEstado = new JLabel("Unknown");
+        lblHealthEstado = new JLabel("Desconocido");
         lblHealthEstado.setFont(new Font("Segoe UI", Font.BOLD, 14));
         lblHealthEstado.setForeground(SUBTEXT);
         lblHealthEstado.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -354,11 +353,11 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         card.setBackground(BG_CARD);
         card.setBorder(new EmptyBorder(20, 22, 20, 22));
 
-        JLabel tit = bold("Budget Status", 15, Color.WHITE);
-        JLabel sub = plain("Monthly Overview", 12, SUBTEXT);
+        JLabel tit = bold("Estado del Presupuesto", 15, Color.WHITE);
+        JLabel sub = plain("Resumen del Mes", 12, SUBTEXT);
 
         lblGastosTotal  = bold("...", 22, Color.WHITE);
-        lblPresupuesto  = plain("of 2500.00 € budget", 12, SUBTEXT);
+        lblPresupuesto  = plain("del presupuesto", 12, SUBTEXT);
 
         barraPresupuesto = new JProgressBar(0, 100);
         barraPresupuesto.setValue(0);
@@ -367,18 +366,18 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         barraPresupuesto.setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
         barraPresupuesto.setBorderPainted(false);
 
-        lblPct = bold("0% used", 12, ORANGE);
+        lblPct = bold("0% usado", 12, ORANGE);
 
         JSeparator sep = new JSeparator();
         sep.setForeground(new Color(55, 55, 70));
         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
 
-        JLabel titIE = bold("Income vs Expenses", 13, Color.WHITE);
+        JLabel titIE = bold("Ingresos vs Gastos", 13, Color.WHITE);
         titIE.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        lblBarraI    = plain("Income",   12, SUBTEXT);
+        lblBarraI    = plain("Ingresos",   12, SUBTEXT);
         lblValBarraI = bold("-",         12, GREEN);
-        lblBarraG    = plain("Expenses", 12, SUBTEXT);
+        lblBarraG    = plain("Gastos", 12, SUBTEXT);
         lblValBarraG = bold("-",         12, RED);
 
         barraIngresosPanel = new JPanel();
@@ -468,8 +467,8 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         card.setBackground(BG_CARD);
         card.setBorder(new EmptyBorder(16, 16, 16, 16));
 
-        JLabel tit = bold("Category Spending", 14, Color.WHITE);
-        JLabel sub = plain("Top Categories", 11, SUBTEXT);
+        JLabel tit = bold("Gastos por Categoría", 14, Color.WHITE);
+        JLabel sub = plain("Categorías Principales", 11, SUBTEXT);
 
         JPanel header = new JPanel(new GridLayout(2, 1));
         header.setBackground(BG_CARD);
@@ -516,10 +515,10 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         card.setBackground(BG_CARD);
         card.setBorder(new EmptyBorder(16, 16, 16, 16));
 
-        JLabel tit = bold("Transactions", 14, Color.WHITE);
+        JLabel tit = bold("Transacciones", 14, Color.WHITE);
 
      //Orden columnas
-        String[] cols = {"Day", "Type", "Category", "Amount", "Concept"};
+        String[] cols = {"Día", "Tipo", "Categoría", "Cantidad", "Concepto"};
         modeloTabla = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -552,7 +551,6 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
                     boolean sel, boolean foc, int row, int col) {
                 super.getTableCellRendererComponent(t, v, sel, foc, row, col);
 
-                // CORREGIDO: Ahora el tipo está en la columna 1 (antes estaba en la 2)
                 String tipo = (String) t.getModel().getValueAt(row, 1);
 
                 setBackground(row % 2 == 0 ? BG_CARD2 : new Color(44, 44, 60));
@@ -586,12 +584,12 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         lblBalance.setForeground(dB >= 0 ? GREEN : RED);
 
         lblGastosTotal.setText(fmt(dG) + " €");
-        lblPresupuesto.setText("of " + fmt(dI) + " € budget");
+        lblPresupuesto.setText("of " + fmt(dI) + " € presupuesto");
 
         int pct = dI > 0 ? (int) Math.min((dG / dI) * 100, 100) : 0;
         barraPresupuesto.setValue(pct);
         barraPresupuesto.setForeground(pct > 90 ? RED : pct > 70 ? ORANGE : GREEN);
-        lblPct.setText(pct + "% used");
+        lblPct.setText(pct + "% usado");
         lblPct.setForeground(pct > 90 ? RED : pct > 70 ? ORANGE : GREEN);
 
         lblValBarraI.setText(fmt(dI) + " €");
@@ -604,16 +602,16 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         Color color;
 
         if (score >= 80) {
-            estado = "Excellent";
+            estado = "Excelente";
             color = GREEN;
         } else if (score >= 60) {
-            estado = "Good";
+            estado = "Bien";
             color = BLUE;
         } else if (score >= 40) {
-            estado = "Average";
+            estado = "Promedio";
             color = ORANGE;
         } else {
-            estado = "Critical";
+            estado = "Crítico";
             color = RED;
         }
 
@@ -651,10 +649,10 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
 
         if (critico) {
             // Si hay texto predictivo lo muestra, si no, usa el genérico
-            lblAlerta.setText(alertaPredictiva.isEmpty() ? "⚠  Gastos críticos" : "⚠  " + alertaPredictiva);
+            lblAlerta.setText(alertaPredictiva.isEmpty() ? "Gastos críticos" : "  " + alertaPredictiva);
             lblAlerta.setForeground(RED);
         } else {
-            lblAlerta.setText("✓  On track");
+            lblAlerta.setText("En línea");
             lblAlerta.setForeground(GREEN);
         }
 
@@ -691,8 +689,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
                 textoAgente = textoAgente.substring(0, indexDia).trim();
             }
 
-            // Creamos la fila con vuestro orden estricto:
-            // Día | Tipo | Categoría | Cantidad | Concepto
+            // Creamos la fila
             String[] filaReordenada = {
                 dia,
                 tipo,
@@ -700,7 +697,6 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
                 cantidad + " €",
                 textoAgente 
             };
-
             modeloTabla.addRow(filaReordenada);
 
             // Gráfico de la Dona
@@ -714,15 +710,18 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
         }
         piePlot.setNotify(true);
 
+        if (datasetDona.getItemCount() == 0) {
+            datasetDona.setValue("Sin datos", 1);
+            piePlot.setSectionPaint("Sin datos", new Color(100, 110, 125));
+        }
+
         /* ---------- colores dinámicos ---------- */
 
         for (Object keyObj : datasetDona.getKeys()) {
 
             String categoria = keyObj.toString();
 
-            if (categoria.equals("Sin datos")) {
-                continue;
-            }
+            if (categoria.equals("Sin datos")) continue;
 
             Color colorCategoria = getColorCategoria(categoria);
 
