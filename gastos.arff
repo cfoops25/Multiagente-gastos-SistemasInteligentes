@@ -30,6 +30,7 @@
 'factura telefono',Necesidad
 'factura teléfono',Necesidad
 'peaje',Necesidad
+'taller',Necesidad
 
 % --- CATEGORÍA: OCIO ---
 'cine',Ocio

@@ -31,6 +31,7 @@ public class AgenteInteligente extends Agent {
     
     private StringBuilder historialMovimientos = new StringBuilder();
     private boolean esCritico = false;
+    private String alertaPredictiva = "";
     
     // RUTAS ABSOLUTAS DE LA FSM
     private final int IR_A_AHORRO = 0;
@@ -141,7 +142,7 @@ public class AgenteInteligente extends Agent {
                     // ==========================================
                     // PASO 5: INFERENCIA DE IA EN TIEMPO REAL
                     // ==========================================
-                    String conceptoUsuario = t.getCategoria().toLowerCase().trim(); // El AgentePercepcion metió el texto libre aquí
+                    String conceptoUsuario = t.getCategoria().toLowerCase().trim();
 
                     // 1. Crear una instancia virtual con la estructura del dataset
                     Instance nuevaInstancia = new DenseInstance(2);
@@ -176,11 +177,7 @@ public class AgenteInteligente extends Agent {
                                             .append(categoriaPredicha).append(";");
 
                     } 
-                    else if ("Otros".equalsIgnoreCase(categoriaPredicha)) {
-                    // NUEVO: Controlar el cajón de sastre de la IA
-                    motivoRechazo = "Concepto no reconocido por el sistema financiero.";
-                    System.out.println(" Rechazado por la FSM: " + motivoRechazo);
-}
+                   
                     else {
                         // LÓGICA DE GASTOS (Ocio, Necesidad o Ahorro)
                         System.out.println("[" + nombreEstado + "] Procesando GASTO de " + t.getMonto() + "€ tipo [" + categoriaPredicha + "]");
@@ -191,27 +188,38 @@ public class AgenteInteligente extends Agent {
                             float gastoProyectado = gastoMedioDiario * 30;
                             if (gastoProyectado > totalIngresos) {
                                 int diaQuiebra = (int) (totalIngresos / gastoMedioDiario);
+                                alertaPredictiva = "Si sigues gastando así diariamente, te quedarás sin saldo el día " + diaQuiebra;
                                 System.out.println("ALERTA PREDICTIVA: A este ritmo, te quedarás sin saldo el día " + diaQuiebra);
                                 esCritico = true;
+                            } else {
+                                alertaPredictiva = "";
                             }
                         }
+                    /* 
+                    else if ("Otros".equalsIgnoreCase(categoriaPredicha)) {
+                        // NUEVO: Controlar el cajón de sastre de la IA
+                        motivoRechazo = "Concepto no reconocido por el sistema financiero.";
+                        System.out.println(" Rechazado por la FSM: " + motivoRechazo);
+                    }*/
+
                         // 2. Evaluar aprobación restrictiva inteligente usando los estados FSM
                         boolean aprobado = false;
                         if (nombreEstado.equals("AHORRO")) {
                             aprobado = true;
                         } else if (nombreEstado.equals("PRECAUCION")) {
-                            if (categoriaPredicha.equalsIgnoreCase("Ocio") && t.getMonto() > 100) {
+                            if (categoriaPredicha.equalsIgnoreCase("Ocio") && t.getMonto() > 100 ||
+                                categoriaPredicha.equalsIgnoreCase("Otros") && t.getMonto() > 100) {
                                 motivoRechazo = "Gasto de Ocio excesivo (>100€) para Precaución.";
-                                System.out.println(" Rechazado por la FSM: " + motivoRechazo);
+                                System.out.println(" Rechazado: " + motivoRechazo);
                             } else { aprobado = true; }
                         } else if (nombreEstado.equals("CRITICO")) {
                             if (categoriaPredicha.equalsIgnoreCase("Necesidad")) {
                                 aprobado = true;
                             } else {
                                 motivoRechazo = "Modo Crítico activo. Solo se permiten 'Necesidades'.";
-                                System.out.println("Rechazado por la FSM: " + motivoRechazo);
+                                System.out.println("Rechazado: " + motivoRechazo);
                             }
-                        }
+                        } 
 
                         // 3. Sumar el dinero real si fue validado por la política
                         if (aprobado) {
@@ -246,7 +254,8 @@ public class AgenteInteligente extends Agent {
                                               "|BALANCE:" + balance + 
                                               "|CRITICO:" + esCritico + 
                                               "|MOVIMIENTOS:" + historialMovimientos.toString() +
-                                              "|RECHAZO:" + motivoRechazo;
+                                              "|RECHAZO:" + motivoRechazo + 
+                                              "|PREDICCION:" + alertaPredictiva;;
                     
                     enviarAVisualizador(datosFormateados);
                     msgProcesado = true; 

@@ -101,7 +101,7 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
 
     private void procesarMensaje(String contenido) {
         System.out.println("[DEBUG Dashboard] Mensaje recibido bruto: " + contenido);
-        String ing = "0", gas = "0", bal = "0", rechazo = "";
+        String ing = "0", gas = "0", bal = "0", rechazo = "", prediccion = "";
         boolean critico = false;
         String[] movs = new String[0];
         for (String p : contenido.split("\\|")) {
@@ -110,15 +110,16 @@ public class VisualizadorBehaviour extends CyclicBehaviour {
             if (p.startsWith("BALANCE:"))     bal    = p.replace("BALANCE:", "");
             if (p.startsWith("CRITICO:"))     critico = p.replace("CRITICO:", "").equals("true");
             if (p.startsWith("RECHAZO:"))     rechazo = p.replace("RECHAZO:", "");
+            if (p.startsWith("PREDICCION:"))  prediccion = p.replace("PREDICCION:", "");
             if (p.startsWith("MOVIMIENTOS:")) {
                 String m = p.replace("MOVIMIENTOS:", "");
                 if (!m.isEmpty()) movs = m.split(";");
             }
         }
-        final String fI = ing, fG = gas, fB = bal, fR = rechazo;
+        final String fI = ing, fG = gas, fB = bal, fR = rechazo, fP = prediccion;
         final boolean fC = critico;
         final String[] fM = movs;
-        SwingUtilities.invokeLater(() -> actualizar(fI, fG, fB, fC, fM, fR));
+        SwingUtilities.invokeLater(() -> actualizar(fI, fG, fB, fC, fM, fR, fP));
     }
 
     // ── VENTANA ───────────────────────────────────────────────────────────────
@@ -587,9 +588,8 @@ private final Color[] coloresCategorias = {
     return card;
 }
     // ── ACTUALIZAR ────────────────────────────────────────────────────────────
-    private void actualizar(String ing, String gas, String bal,
-                             boolean critico, String[] movs,
-                             String alertaRechazo) {
+    private void actualizar(String ing, String gas, String bal, boolean critico, String[] movs,
+                             String alertaRechazo, String alertaPredictiva) {
        
                                 
         double dI = Double.parseDouble(ing);
@@ -667,8 +667,16 @@ private final Color[] coloresCategorias = {
         barraIngresosPanel.revalidate();
         barraGastosPanel.revalidate();
 
-        lblAlerta.setText(critico ? "⚠  Gastos críticos" : "✓  On track");
-        lblAlerta.setForeground(critico ? RED : GREEN);
+        //lblAlerta.setText(critico ? "⚠  Gastos críticos" : "✓  On track");
+        //lblAlerta.setForeground(critico ? RED : GREEN);
+        if (critico) {
+            // Si hay texto predictivo lo muestra, si no, usa el genérico
+            lblAlerta.setText(alertaPredictiva.isEmpty() ? "⚠  Gastos críticos" : "⚠  " + alertaPredictiva);
+            lblAlerta.setForeground(RED);
+        } else {
+            lblAlerta.setText("✓  On track");
+            lblAlerta.setForeground(GREEN);
+        }
 
         // Tabla y dona
         modeloTabla.setRowCount(0);
